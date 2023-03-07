@@ -5,7 +5,8 @@
   "license": "ISC",
   "repository": "<Add your repository here>",
   "sapux": [
-    "app/bookmanage"
+    "app/bookmanage",
+    "app/custrequestmanage"
   ],
   "devDependencies": {
     "@sap/ux-specification": "^1.108.0"

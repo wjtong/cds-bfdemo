@@ -23,3 +23,8 @@ entity CustRequestItem {
   quantity : Double;
   custRequest : Association to CustRequest on custRequestId = custRequest.ID;
 }
+
+entity CustRequests as select key custRequest.ID, custRequestItem.productId
+        from CustRequest as custRequest
+        inner join CustRequestItem as custRequestItem on custRequest.ID = custRequestItem.custRequestId
+        group by custRequest.ID;
