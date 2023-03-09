@@ -4,12 +4,12 @@ annotate service.CustRequests with @(
     UI.LineItem : [
         {
             $Type : 'UI.DataField',
-            Value : ID,
+            Value : custRequestId,
             Label : 'ID',
         },
         {
             $Type : 'UI.DataField',
-            Value : productId,
+            Value : custRequestItem.productId,
             Label : 'Product ID',
         },
     ]
@@ -20,11 +20,11 @@ annotate service.CustRequests with @(
         Data : [
             {
                 $Type : 'UI.DataField',
-                Value : ID,
+                Value : custRequestId,
             },
             {
                 $Type : 'UI.DataField',
-                Value : productId,
+                Value : custRequestItem.productId,
             },
         ],
     },
@@ -39,7 +39,7 @@ annotate service.CustRequests with @(
 annotate service.CustRequests with @(
     UI.DataPoint #ID : {
         $Type : 'UI.DataPointType',
-        Value : ID,
+        Value : custRequestId,
         Title : 'ID',
     },
     UI.HeaderFacets : [

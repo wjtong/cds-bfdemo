@@ -7,24 +7,18 @@ entity Books {
 }
 
 entity CustRequest {
-  key ID : String;
+  key ID : UUID;
   custRequestName: String;
   description: String;
   statusId : String;
   fromPartyId : String;
-  custRequestItem : Association to many CustRequestItem on custRequestItem.custRequestId = ID;
+  custRequestItem : Composition of one CustRequestItem on custRequestItem.custRequestId = ID;
 }
 
 entity CustRequestItem {
-  key ID : String;
-  custRequestId : String;
+  key ID : UUID;
   custRequestItemSeqId : String;
+  custRequestId : String; 
   productId : String;
   quantity : Double;
-  custRequest : Association to CustRequest on custRequestId = custRequest.ID;
 }
-
-entity CustRequests as select key custRequest.ID, custRequestItem.productId
-        from CustRequest as custRequest
-        inner join CustRequestItem as custRequestItem on custRequest.ID = custRequestItem.custRequestId
-        group by custRequest.ID;
