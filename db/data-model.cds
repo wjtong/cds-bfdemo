@@ -7,7 +7,7 @@ entity Books {
 }
 
 entity CustRequest {
-  key ID : UUID;
+  key ID : String;
   custRequestName: String;
   description: String;
   statusId : String;
@@ -16,7 +16,7 @@ entity CustRequest {
 }
 
 entity CustRequestItem {
-  key ID : UUID;
+  key ID : String;
   custRequestItemSeqId : String;
   custRequestId : String; 
   productId : String;
