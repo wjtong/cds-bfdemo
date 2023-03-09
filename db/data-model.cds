@@ -12,13 +12,13 @@ entity CustRequest {
   description: String;
   statusId : String;
   fromPartyId : String;
-  custRequestItem : Composition of one CustRequestItem on custRequestItem.custRequestId = ID;
+  custRequestItem : Composition of one CustRequestItem on custRequestItem.custRequest = $self @assert.integrity;
 }
 
 entity CustRequestItem {
-  key ID : String;
+  key ID : UUID;
   custRequestItemSeqId : String;
-  custRequestId : String; 
+  custRequest : Association to CustRequest; 
   productId : String;
   quantity : Double;
 }
