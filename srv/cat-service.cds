@@ -11,8 +11,10 @@ service CatalogService {
 
     entity CustRequestItems as projection on my.CustRequestItem;
 
+    // @cds.persistence.exists
     entity PartyGroups as projection on my.PartyGroup;
 
+    // @odata.draft.enabled
     entity Products as projection on my.Product;
     
 }

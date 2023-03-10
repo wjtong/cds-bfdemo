@@ -1,13 +1,5 @@
 using CatalogService as service from '../../srv/cat-service';
 
-// annotate service.CustRequests with @(
-//   UI.SelectionFields : [
-//     custRequestId,
-//     openDateTime
-//   ]
-// );
-
-
 // annotate service.CustRequests with @(UI.LineItem: [
 //     {
 //         $Type: 'UI.DataField',
@@ -33,6 +25,10 @@ using CatalogService as service from '../../srv/cat-service';
 // ![@UI.Criticality]:processingResultLevel,
 // );
 
+annotate service.CustRequests with @(
+  UI.SelectionFields : [custRequestId, openDateTime, partyGroup.groupName]
+);
+annotate service.CustRequests.key @Common.Label : '服务ID';
 annotate service.CustRequests with @UI.LineItem : {
     $value : [
         {$Type : 'UI.DataField',Value: custRequestId,Label: '服务ID'},
@@ -63,6 +59,11 @@ annotate service.CustRequests with @(
                 $Type: 'UI.DataField',
                 Value: custRequestItem.sequenceNum,
                 Label: '保修卡号'
+            },
+            {
+                $Type: 'UI.DataField',
+                Value: partyGroup.groupName,
+                Label: '客户名称'
             },
             
         ],

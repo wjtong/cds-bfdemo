@@ -11,7 +11,7 @@ import cds.gen.catalogservice.Books;
 
 public class CatalogServiceHandlerTest {
 
-	private CatalogServiceHandler handler = new CatalogServiceHandler();
+	private CatalogServiceHandler handler = new CatalogServiceHandler(null, null);
 	private Books book = Books.create();
 
 	@Before
