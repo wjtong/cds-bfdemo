@@ -7,4 +7,8 @@ service CatalogService {
     entity CustRequests as projection on my.CustRequest;
 
     entity CustRequestItems as projection on my.CustRequestItem;
+
+    entity Products as projection on my.Product;
+
+    entity Parties as projection on my.Party;
 }

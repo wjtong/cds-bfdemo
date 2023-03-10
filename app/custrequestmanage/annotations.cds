@@ -26,6 +26,10 @@ annotate service.CustRequests with @(
                 $Type : 'UI.DataField',
                 Value : custRequestItem.productId,
             },
+            {
+                $Type : 'UI.DataField',
+                Value : fromPartyId,
+            },
         ],
     },
     UI.Facets : [
@@ -49,4 +53,37 @@ annotate service.CustRequests with @(
             Target : '@UI.DataPoint#ID',
         },
     ]
-);
+) {
+    fromPartyId @Common : { 
+        ValueList : {
+            $Type : 'Common.ValueListType',
+            CollectionPath : 'Parties',
+            Parameters : [
+                {
+                    $Type : 'Common.ValueListParameterInOut',
+                    LocalDataProperty : fromPartyId,
+                    ValueListProperty : 'partyId'
+                },
+            ]
+        },
+    }
+    // party
+    // @ValueList.entity : 'Parties';
+};
+annotate service.CustRequestItems with {
+    productId @Common : {
+        Text : product.productName,
+        TextArrangement : #TextOnly,
+        ValueList : {
+            $Type : 'Common.ValueListType',
+            CollectionPath : 'Products',
+            Parameters : [
+                {
+                    $Type : 'Common.ValueListParameterInOut',
+                    LocalDataProperty : productId,
+                    ValueListProperty : 'productId'
+                },
+            ]
+        },
+    };
+};
