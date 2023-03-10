@@ -1,3 +1,3 @@
-ID;custRequestId;custRequestItemSeqId;productId;quantity
-50000;10000;0001;GZ-1006-1;23
-50010;10010;0001;WG-9943-B3;45
+custRequestId;custRequestItemSeqId;productId;quantity;sequenceNum
+10000;0001;p_001;23;20231
+10010;0001;p_002;45;20232

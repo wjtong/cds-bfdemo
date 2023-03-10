@@ -1,3 +1,10 @@
-ID;custRequestName;description;statusId;fromPartyId
-10000;Fix Required;Require to fix the fixed asset;CRQ_ACCEPTED;9000
-10010;Ask For Debug;Request for debugging;CRQ_CANCELLED;9010
+custRequestId;custRequestName;description;statusId;internalComment;fromPartyId
+10000;Fix Required;Require to fix the fixed asset;CRQ_ACCEPTED;黄山新浪办公设备公司;customer001
+10010;Ask For Debug;Request for debugging;CRQ_CANCELLED;六安泳辰电脑有限公司;customer002
+10011;Ask For Debug;Request for debugging;CRQ_CANCELLED;六安泳辰电脑有限公司;customer002
+10012;Ask For Debug;Request for debugging;CRQ_CANCELLED;六安泳辰电脑有限公司;customer002
+10013;Ask For Debug;Request for debugging;CRQ_CANCELLED;六安泳辰电脑有限公司;customer002
+10014;Ask For Debug;Request for debugging;CRQ_CANCELLED;六安泳辰电脑有限公司;customer002
+10015;Ask For Debug;Request for debugging;CRQ_CANCELLED;六安泳辰电脑有限公司;customer002
+10016;Ask For Debug;Request for debugging;CRQ_CANCELLED;六安泳辰电脑有限公司;customer002
+10017;Ask For Debug;Request for debugging;CRQ_CANCELLED;六安泳辰电脑有限公司;customer002
