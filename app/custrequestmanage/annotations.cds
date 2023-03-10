@@ -28,6 +28,10 @@ annotate service.CustRequests with @(
             },
             {
                 $Type : 'UI.DataField',
+                Value : custRequestItem.quantity,
+            },
+            {
+                $Type : 'UI.DataField',
                 Value : fromPartyId,
             },
         ],
