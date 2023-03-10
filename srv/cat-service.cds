@@ -5,4 +5,6 @@ service CatalogService {
 
     @odata.draft.enabled
     entity CustRequests as projection on my.CustRequest;
+
+    entity CustRequestItems as projection on my.CustRequestItem;
 }

@@ -7,18 +7,18 @@ entity Books {
 }
 
 entity CustRequest {
-  key ID : String;
+  key custRequestId : String;
   custRequestName: String;
   description: String;
   statusId : String;
   fromPartyId : String;
-  custRequestItem : Composition of one CustRequestItem on custRequestItem.custRequest = $self @assert.integrity;
+  custRequestItem : Composition of one CustRequestItem on custRequestItem.custRequestId = custRequestId;
 }
 
 entity CustRequestItem {
-  key ID : UUID;
-  custRequestItemSeqId : String;
-  custRequest : Association to CustRequest; 
+  key custRequestId : String;
+  key custRequestItemSeqId : String;
+  custRequest : Association to CustRequest on custRequest.custRequestId = custRequestId; 
   productId : String;
   quantity : Double;
 }
