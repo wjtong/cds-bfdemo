@@ -1,4 +1,10 @@
 namespace my.bookshop;
+using {
+    Currency,
+    sap,
+    managed,
+    cuid
+} from '@sap/cds/common';
 
 entity Books {
   key ID : Integer;
@@ -6,17 +12,18 @@ entity Books {
   stock  : Integer;
 }
 
-entity CustRequest {
+entity CustRequest : managed {
   key custRequestId : String;
   custRequestName: String;
   description: String;
   statusId : String;
   fromPartyId : String;
   party : Association to Party on party.partyId = fromPartyId;
-  custRequestItem : Composition of one CustRequestItem on custRequestItem.custRequestId = custRequestId @assert.integrity;
+  custRequestItem : Composition of one CustRequestItem on custRequestItem.custRequestId = custRequestId;
+  // custRequestItem : Composition of one CustRequestItem not null;
 }
 
-entity CustRequestItem {
+entity CustRequestItem : managed {
   key custRequestId : String;
   key custRequestItemSeqId : String default 00001;
   custRequest : Association to CustRequest on custRequest.custRequestId = custRequestId; 

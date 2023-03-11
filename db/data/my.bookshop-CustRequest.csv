@@ -1,3 +1,3 @@
 custRequestId;custRequestName;description;statusId;fromPartyId
-10000;Fix Required;Require to fix the fixed asset;CRQ_ACCEPTED;10000
-10010;Ask For Debug;Request for debugging;CRQ_CANCELLED;10010
+123e4567-e89b-12d3-a456-426614174000;Fix Required;Require to fix the fixed asset;CRQ_ACCEPTED;10000
+123e4567-e89b-12d3-a456-426614174010;Ask For Debug;Request for debugging;CRQ_CANCELLED;10010
