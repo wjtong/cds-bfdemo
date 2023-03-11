@@ -45,23 +45,20 @@ public class CatalogServiceHandler implements EventHandler {
 	@After(event = DraftService.EVENT_DRAFT_NEW)
 	public void AfterNewDraft(DraftNewEventContext context, CustRequests custRequest) {
 		System.out.println("------------------------------- in after draft new event handler");
+	}
+	@After(event = DraftService.EVENT_DRAFT_CREATE)
+	public void AfterCreateDraft(DraftCreateEventContext context, CustRequests custRequest) {
+		System.out.println("------------------------------- in after draft create event handler");
 		DraftService catalogService = context.getService();
 		CustRequestItems custRequestItem = custRequest.getCustRequestItem();
 		if (custRequestItem == null) {
-			System.out.println("------------------------------- custRequestItem is null");
 			custRequestItem = CustRequestItems.create();
 			custRequestItem.put("custRequestItemSeqId", "00001");
 			custRequestItem.put("custRequestId", custRequest.getCustRequestId());
 			Iterable<? extends Map<String, ?>> result =  catalogService.newDraft(Insert.into(CustRequestItems_.class).entry(custRequestItem));
 			context.setResult(result);
 			custRequest.setCustRequestItem(custRequestItem);
-			System.out.println("-------------------------------" + custRequestItem);
-			System.out.println("-------------------------------" + custRequest);
 		}
-	}
-	@After(event = DraftService.EVENT_DRAFT_CREATE)
-	public void AfterCreateDraft(DraftCreateEventContext context) {
-		System.out.println("------------------------------- in after draft create event handler");
 	}
 	@Before(event = DraftService.EVENT_DRAFT_CREATE)
 	public void BeforeCreateDraft(DraftCreateEventContext context) {
