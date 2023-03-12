@@ -19,8 +19,7 @@ entity CustRequest : managed {
   statusId : String;
   fromPartyId : String;
   party : Association to Party on party.partyId = fromPartyId;
-  custRequestItem : Composition of one CustRequestItem on custRequestItem.custRequestId = custRequestId;
-  // custRequestItem : Composition of one CustRequestItem not null;
+  custRequestItem : Composition of one CustRequestItem on custRequestItem.custRequestId = custRequestId and custRequestItem.custRequestItemSeqId = 00001;
 }
 
 entity CustRequestItem : managed {
@@ -43,4 +42,16 @@ entity Product {
 entity Party {
   key partyId : String;
   partyName : String;
+}
+
+entity WorkEffort {
+  key workEffortId : String;
+  workEffortName : String;
+}
+
+entity CustRequestWorkEffort {
+  key custRequestId : String;
+  key workEffortId : String;
+  custRequest : Association to one CustRequest on custRequest.custRequestId = custRequestId;
+  workEffort : Association to one WorkEffort on workEffort.workEffortId = workEffortId;
 }
