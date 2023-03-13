@@ -8,8 +8,8 @@ service CatalogService {
     // @Common.DraftRoot.ActivationAction : 'CatalogService.activateCustRequestsAction'
     entity CustRequests as projection on my.CustRequest actions {
         @cds.odata.bindingparameter.collection
-        action newCustRequestsAction(custRequestName: String, description: String) returns CustRequests;
-        action activateCustRequestsAction() returns CustRequests;
+        action newCustRequestsAction(serialNumber: String) returns CustRequests;
+        // action activateCustRequestsAction() returns CustRequests;
     };
 
     entity CustRequestItems as projection on my.CustRequestItem;
@@ -21,4 +21,8 @@ service CatalogService {
     entity WorkEfforts as projection on my.WorkEffort;
 
     entity CustRequestWorkEfforts as projection on my.CustRequestWorkEffort;
+
+    entity FixedAssets as projection on my.FixedAsset;
+
+    entity FixedAssetFault as projection on my.FixedAssetFault;
 }

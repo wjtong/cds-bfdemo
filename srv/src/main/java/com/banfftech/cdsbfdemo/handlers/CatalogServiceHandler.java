@@ -2,13 +2,18 @@ package com.banfftech.cdsbfdemo.handlers;
 
 import static cds.gen.catalogservice.CatalogService_.WORK_EFFORTS;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
 
+import com.sap.cds.Result;
+import com.sap.cds.Row;
 import com.sap.cds.ql.Insert;
+import com.sap.cds.ql.Select;
+import com.sap.cds.ql.cqn.CqnSelect;
 import com.sap.cds.services.EventContext;
 import com.sap.cds.services.Service;
 import com.sap.cds.services.cds.CdsCreateEventContext;
@@ -16,11 +21,13 @@ import com.sap.cds.services.cds.CqnService;
 import com.sap.cds.services.draft.DraftCreateEventContext;
 import com.sap.cds.services.draft.DraftNewEventContext;
 import com.sap.cds.services.draft.DraftService;
+import com.sap.cds.services.environment.CdsProperties.Persistence;
 import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.After;
 import com.sap.cds.services.handler.annotations.Before;
 import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
+import com.sap.cds.services.persistence.PersistenceService;
 
 import cds.gen.catalogservice.ActivateCustRequestsActionContext;
 import cds.gen.catalogservice.Books;
@@ -31,8 +38,11 @@ import cds.gen.catalogservice.CustRequestWorkEfforts;
 import cds.gen.catalogservice.CustRequestWorkEfforts_;
 import cds.gen.catalogservice.CustRequests;
 import cds.gen.catalogservice.CustRequests_;
+import cds.gen.catalogservice.FixedAssets;
+import cds.gen.catalogservice.FixedAssets_;
 import cds.gen.catalogservice.NewCustRequestsActionContext;
 import cds.gen.catalogservice.WorkEfforts;
+import cds.gen.my.bookshop.Bookshop_;
 
 @Component
 @ServiceName(CatalogService_.CDS_NAME)
@@ -97,7 +107,15 @@ public class CatalogServiceHandler implements EventHandler {
 		CustRequests custRequests = CustRequests.create();
 		String custRequestId = UUID.randomUUID().toString();
 		custRequests.setCustRequestId(custRequestId);
+		String serialNumber = context.getSerialNumber();
+		Map<String, Object>	fixedAssetValue = new HashMap<>();
+		fixedAssetValue.put("serialNumber", serialNumber);
+		CqnSelect select = Select.from(FixedAssets_.class).matching(fixedAssetValue);
+		
 		DraftService service = (DraftService) context.getService();
+		Row row = service.run(select).single();
+		String fixedAssetId = row.getPath("fixedAssetId");
+		System.out.println("------------------------------- " + fixedAssetId);
 		System.out.println(service);
 		CustRequests result = service.newDraft(Insert.into(CustRequests_.class).entry(custRequests)).single(CustRequests.class);
 		context.setResult(result);

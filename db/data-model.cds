@@ -55,3 +55,23 @@ entity CustRequestWorkEffort {
   custRequest : Association to one CustRequest on custRequest.custRequestId = custRequestId;
   workEffort : Association to one WorkEffort on workEffort.workEffortId = workEffortId;
 }
+
+entity FixedAsset {
+  key fixedAssetId : String;
+  instanceOfProductId : String;
+  instanceOfProduct : Association to one Product on instanceOfProductId = instanceOfProduct.productId;
+  serialNumber : String;
+}
+
+entity FixedAssetFault {
+  key fixedAssetFaultId : String;
+  fixedAssetId : String;
+  fixedAsset : Association to one FixedAsset on fixedAssetId = fixedAsset.fixedAssetId @assert.notNull;
+  custRequestId : String;
+  custRequestItemSeqId : String;
+  custRequest : Association to one CustRequest on custRequestId = custRequest.custRequestId;
+  workEffortId : String;
+  workEffort : Association to one WorkEffort on workEffortId = workEffort.workEffortId;
+  statusId : String;
+  description : String;
+}
