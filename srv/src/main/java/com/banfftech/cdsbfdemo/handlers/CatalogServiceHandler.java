@@ -38,6 +38,9 @@ import cds.gen.catalogservice.CustRequestWorkEfforts;
 import cds.gen.catalogservice.CustRequestWorkEfforts_;
 import cds.gen.catalogservice.CustRequests;
 import cds.gen.catalogservice.CustRequests_;
+import cds.gen.catalogservice.FixedAssetFault;
+import cds.gen.catalogservice.FixedAssetFaults;
+import cds.gen.catalogservice.FixedAssetFaults_;
 import cds.gen.catalogservice.FixedAssets;
 import cds.gen.catalogservice.FixedAssets_;
 import cds.gen.catalogservice.NewCustRequestsActionContext;
@@ -70,16 +73,16 @@ public class CatalogServiceHandler implements EventHandler {
 	@After(event = DraftService.EVENT_DRAFT_CREATE)
 	public void AfterCreateDraft(DraftCreateEventContext context, CustRequests custRequest) {
 		System.out.println("------------------------------- in after draft create event handler");
-		DraftService catalogService = context.getService();
-		CustRequestItems custRequestItem = custRequest.getCustRequestItem();
-		if (custRequestItem == null) {
-			custRequestItem = CustRequestItems.create();
-			custRequestItem.put("custRequestItemSeqId", "00001");
-			custRequestItem.put("custRequestId", custRequest.getCustRequestId());
-			Iterable<? extends Map<String, ?>> result =  catalogService.newDraft(Insert.into(CustRequestItems_.class).entry(custRequestItem));
-			context.setResult(result);
-			custRequest.setCustRequestItem(custRequestItem);
-		}
+		// DraftService catalogService = context.getService();
+		// CustRequestItems custRequestItem = custRequest.getCustRequestItem();
+		// if (custRequestItem == null) {
+		// 	custRequestItem = CustRequestItems.create();
+		// 	custRequestItem.put("custRequestItemSeqId", "00001");
+		// 	custRequestItem.put("custRequestId", custRequest.getCustRequestId());
+		// 	Iterable<? extends Map<String, ?>> result =  catalogService.newDraft(Insert.into(CustRequestItems_.class).entry(custRequestItem));
+		// 	context.setResult(result);
+		// 	custRequest.setCustRequestItem(custRequestItem);
+		// }
 	}
 	@Before(event = DraftService.EVENT_DRAFT_CREATE)
 	public void BeforeCreateDraft(DraftCreateEventContext context) {
@@ -104,20 +107,33 @@ public class CatalogServiceHandler implements EventHandler {
 	@On(entity = CustRequests_.CDS_NAME)
 	public void newCustRequestsAction(NewCustRequestsActionContext context) {
 		System.out.println("------------------------------- in newCustRequestsAction");
-		CustRequests custRequests = CustRequests.create();
-		String custRequestId = UUID.randomUUID().toString();
-		custRequests.setCustRequestId(custRequestId);
 		String serialNumber = context.getSerialNumber();
 		Map<String, Object>	fixedAssetValue = new HashMap<>();
 		fixedAssetValue.put("serialNumber", serialNumber);
 		CqnSelect select = Select.from(FixedAssets_.class).matching(fixedAssetValue);
-		
 		DraftService service = (DraftService) context.getService();
 		Row row = service.run(select).single();
 		String fixedAssetId = row.getPath("fixedAssetId");
-		System.out.println("------------------------------- " + fixedAssetId);
 		System.out.println(service);
+		// insert CustRequests
+		CustRequests custRequests = CustRequests.create();
+		String custRequestId = UUID.randomUUID().toString();
+		custRequests.setCustRequestId(custRequestId);
 		CustRequests result = service.newDraft(Insert.into(CustRequests_.class).entry(custRequests)).single(CustRequests.class);
+		// insert CustRequestItems
+		CustRequestItems custRequestItem = CustRequestItems.create();
+		custRequestItem.put("custRequestItemSeqId", "00001");
+		custRequestItem.put("custRequestId", custRequests.getCustRequestId());
+		service.newDraft(Insert.into(CustRequestItems_.class).entry(custRequestItem));
+		// insert FixedAssetFault
+		FixedAssetFaults fixedAssetFault = FixedAssetFaults.create();
+		fixedAssetFault.setFixedAssetFaultId(UUID.randomUUID().toString());
+		fixedAssetFault.setFixedAssetId(fixedAssetId);
+		fixedAssetFault.setCustRequestId(custRequestItem.getCustRequestId());
+		fixedAssetFault.setCustRequestItemSeqId(custRequestItem.getCustRequestItemSeqId());
+		service.newDraft(Insert.into(FixedAssetFaults_.class).entry(fixedAssetFault));
+		custRequestItem.setFixedAssetFault(fixedAssetFault);
+		custRequests.setCustRequestItem(custRequestItem);
 		context.setResult(result);
 		// custRequests.setCustRequestName(co);
 	}

@@ -29,6 +29,7 @@ entity CustRequestItem : managed {
   productId : String; 
   quantity : Double;
   product : Association to one Product on product.productId = productId;
+  fixedAssetFault : Composition of one FixedAssetFault on custRequestId = fixedAssetFault.custRequestId and custRequestItemSeqId = fixedAssetFault.custRequestItemSeqId;
 }
 
 entity Product {
@@ -66,7 +67,7 @@ entity FixedAsset {
 entity FixedAssetFault {
   key fixedAssetFaultId : String;
   fixedAssetId : String;
-  fixedAsset : Association to one FixedAsset on fixedAssetId = fixedAsset.fixedAssetId @assert.notNull;
+  fixedAsset : Association to one FixedAsset on fixedAssetId = fixedAsset.fixedAssetId;
   custRequestId : String;
   custRequestItemSeqId : String;
   custRequest : Association to one CustRequest on custRequestId = custRequest.custRequestId;

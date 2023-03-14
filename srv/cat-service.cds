@@ -24,5 +24,5 @@ service CatalogService {
 
     entity FixedAssets as projection on my.FixedAsset;
 
-    entity FixedAssetFault as projection on my.FixedAssetFault;
+    entity FixedAssetFaults as projection on my.FixedAssetFault;
 }
