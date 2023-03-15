@@ -1,6 +1,6 @@
 using my.bookshop as my from '../db/data-model';
 
-service CatalogService {
+service CatalogService @(requires: 'any') {
     @readonly entity Books as projection on my.Books;
 
     @odata.draft.enabled
@@ -18,7 +18,8 @@ service CatalogService {
 
     entity CustRequestItems as select from my.CustRequestItem {
         *,
-        null as computedField : String
+        null as computedField : String,
+        product.productName as productName
     };
 
     entity Products as projection on my.Product;
