@@ -25,4 +25,17 @@ service CatalogService {
     entity FixedAssets as projection on my.FixedAsset;
 
     entity FixedAssetFaults as projection on my.FixedAssetFault;
+ 
+    // access control restrictions
+    // annotate CustRequests with @restrict : [
+    //     {
+    //         grant : '*',
+    //         to : 'authenticated-user',
+    //         where : 'createdBy=$user'
+    //     },
+    //     {
+    //         grant : '*',
+    //         to : 'admin',
+    //     }
+    // ];
 }
