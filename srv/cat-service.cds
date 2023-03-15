@@ -16,7 +16,10 @@ service CatalogService {
         fixedAssetFault : Composition of one FixedAssetFaults on custRequestId = fixedAssetFault.custRequestId and custRequestItemSeqId = fixedAssetFault.custRequestItemSeqId;
     };
 
-    entity CustRequestItems as projection on my.CustRequestItem;
+    entity CustRequestItems as select from my.CustRequestItem {
+        *,
+        null as computedField : String
+    };
 
     entity Products as projection on my.Product;
 
