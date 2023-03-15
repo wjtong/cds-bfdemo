@@ -9,25 +9,21 @@ import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
 
-import com.sap.cds.Result;
 import com.sap.cds.Row;
 import com.sap.cds.ql.Insert;
 import com.sap.cds.ql.Select;
 import com.sap.cds.ql.cqn.CqnSelect;
 import com.sap.cds.services.EventContext;
-import com.sap.cds.services.Service;
 import com.sap.cds.services.cds.CdsCreateEventContext;
 import com.sap.cds.services.cds.CqnService;
 import com.sap.cds.services.draft.DraftCreateEventContext;
 import com.sap.cds.services.draft.DraftNewEventContext;
 import com.sap.cds.services.draft.DraftService;
-import com.sap.cds.services.environment.CdsProperties.Persistence;
 import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.After;
 import com.sap.cds.services.handler.annotations.Before;
 import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
-import com.sap.cds.services.persistence.PersistenceService;
 
 import cds.gen.catalogservice.ActivateCustRequestsActionContext;
 import cds.gen.catalogservice.Books;
@@ -38,14 +34,11 @@ import cds.gen.catalogservice.CustRequestWorkEfforts;
 import cds.gen.catalogservice.CustRequestWorkEfforts_;
 import cds.gen.catalogservice.CustRequests;
 import cds.gen.catalogservice.CustRequests_;
-import cds.gen.catalogservice.FixedAssetFault;
 import cds.gen.catalogservice.FixedAssetFaults;
 import cds.gen.catalogservice.FixedAssetFaults_;
-import cds.gen.catalogservice.FixedAssets;
 import cds.gen.catalogservice.FixedAssets_;
 import cds.gen.catalogservice.NewCustRequestsActionContext;
 import cds.gen.catalogservice.WorkEfforts;
-import cds.gen.my.bookshop.Bookshop_;
 
 @Component
 @ServiceName(CatalogService_.CDS_NAME)

@@ -12,6 +12,10 @@ service CatalogService {
         // action activateCustRequestsAction() returns CustRequests;
     };
 
+    extend my.CustRequestItem with {
+        fixedAssetFault : Composition of one FixedAssetFaults on custRequestId = fixedAssetFault.custRequestId and custRequestItemSeqId = fixedAssetFault.custRequestItemSeqId;
+    };
+
     entity CustRequestItems as projection on my.CustRequestItem;
 
     entity Products as projection on my.Product;

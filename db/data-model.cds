@@ -29,7 +29,7 @@ entity CustRequestItem : managed {
   productId : String; 
   quantity : Double;
   product : Association to one Product on product.productId = productId;
-  fixedAssetFault : Composition of one FixedAssetFault on custRequestId = fixedAssetFault.custRequestId and custRequestItemSeqId = fixedAssetFault.custRequestItemSeqId;
+  // fixedAssetFault : Composition of one FixedAssetFault on custRequestId = fixedAssetFault.custRequestId and custRequestItemSeqId = fixedAssetFault.custRequestItemSeqId;
 }
 
 entity Product {
