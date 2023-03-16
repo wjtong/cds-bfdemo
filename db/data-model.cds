@@ -87,5 +87,6 @@ entity NoteData {
 entity CustRequestNote {
   key custRequestId : String;
   key noteId : String;
+  // noteData : Composition of NoteData on noteData.noteId = noteId;
   custRequest : Association to CustRequest on custRequest.custRequestId = custRequestId;
 }

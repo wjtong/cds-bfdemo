@@ -17,7 +17,7 @@ service CatalogService @(requires: 'authenticated-user') {
     };
 
     extend my.CustRequestNote with {
-        noteData : Composition of NoteDatas on noteData.noteId = noteId;
+        noteData : Composition of my.NoteData on noteData.noteId = noteId;
     };
     
 

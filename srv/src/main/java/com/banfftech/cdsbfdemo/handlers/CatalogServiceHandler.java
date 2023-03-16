@@ -102,6 +102,7 @@ public class CatalogServiceHandler implements EventHandler {
 		noteDatas.setNoteId(noteId);
 		DraftService service = (DraftService) context.getService();
 		NoteDatas result = service.newDraft(Insert.into(NoteDatas_.class).entry(noteDatas)).single(NoteDatas.class);
+		custRequestNote.setNoteData(result);
 	}
 
 	@After(event = CqnService.EVENT_CREATE)
