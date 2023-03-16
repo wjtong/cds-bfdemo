@@ -1,20 +1,6 @@
 using CatalogService as service from '../../srv/cat-service';
 
 annotate service.CustRequests with @(
-    UI.LineItem : [
-        {
-            $Type : 'UI.DataField',
-            Value : custRequestId,
-            Label : 'ID',
-        },
-        {
-            $Type : 'UI.DataField',
-            Value : custRequestItem.productId,
-            Label : 'Product ID',
-        },
-    ]
-);
-annotate service.CustRequests with @(
     UI.FieldGroup #BaseInfo : {
         $Type : 'UI.FieldGroupType',
         Data : [
@@ -113,6 +99,24 @@ annotate service.CustRequestNotes with @(
         {
             $Type : 'UI.DataField',
             Value : noteData.noteInfo,
+        },
+    ]
+);
+annotate service.CustRequests with @(
+    UI.LineItem : [
+        {
+            $Type : 'UI.DataField',
+            Value : custRequestId,
+            Label : 'ID',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : custRequestItem.productId,
+            Label : 'Product ID',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : custRequestName,
         },
     ]
 );

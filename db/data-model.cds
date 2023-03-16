@@ -14,7 +14,7 @@ entity Books {
 
 entity CustRequest : managed {
   key custRequestId : String;
-  custRequestName: String;
+  custRequestName: String @title : '{i18n>CustRequestName}';
   description: String;
   statusId : String;
   fromPartyId : String;
@@ -80,13 +80,13 @@ entity FixedAssetFault {
 
 entity NoteData {
   key noteId : String;
-  noteName : String;
-  noteInfo : String;
+  noteName : String @title : '{i18n>NoteName}';
+  noteInfo : String @title : '{i18n>NoteInfo}';
 }
 
 entity CustRequestNote {
   key custRequestId : String;
-  key noteId : String;
+  key noteId : String @title : '{i18n>NoteId}';
   // noteData : Composition of NoteData on noteData.noteId = noteId;
   custRequest : Association to CustRequest on custRequest.custRequestId = custRequestId;
 }
