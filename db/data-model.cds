@@ -19,7 +19,8 @@ entity CustRequest : managed {
   statusId : String;
   fromPartyId : String;
   party : Association to Party on party.partyId = fromPartyId;
-  custRequestItem : Composition of one CustRequestItem on custRequestItem.custRequestId = custRequestId and custRequestItem.custRequestItemSeqId = 0001;
+  custRequestNote : Composition of many CustRequestNote on custRequestNote.custRequestId = custRequestId;
+  custRequestItem : Composition of one CustRequestItem on custRequestItem.custRequestId = custRequestId and custRequestItem.custRequestItemSeqId = 10;
 }
 
 entity CustRequestItem : managed {
@@ -75,4 +76,16 @@ entity FixedAssetFault {
   workEffort : Association to one WorkEffort on workEffortId = workEffort.workEffortId;
   statusId : String;
   description : String;
+}
+
+entity NoteData {
+  key noteId : String;
+  noteName : String;
+  noteInfo : String;
+}
+
+entity CustRequestNote {
+  key custRequestId : String;
+  key noteId : String;
+  custRequest : Association to CustRequest on custRequest.custRequestId = custRequestId;
 }

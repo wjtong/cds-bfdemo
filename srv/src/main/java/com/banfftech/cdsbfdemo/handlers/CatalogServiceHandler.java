@@ -30,6 +30,7 @@ import cds.gen.catalogservice.Books;
 import cds.gen.catalogservice.CatalogService_;
 import cds.gen.catalogservice.CustRequestItems;
 import cds.gen.catalogservice.CustRequestItems_;
+import cds.gen.catalogservice.CustRequestNotes;
 import cds.gen.catalogservice.CustRequestWorkEfforts;
 import cds.gen.catalogservice.CustRequestWorkEfforts_;
 import cds.gen.catalogservice.CustRequests;
@@ -38,7 +39,10 @@ import cds.gen.catalogservice.FixedAssetFaults;
 import cds.gen.catalogservice.FixedAssetFaults_;
 import cds.gen.catalogservice.FixedAssets_;
 import cds.gen.catalogservice.NewCustRequestsActionContext;
+import cds.gen.catalogservice.NoteDatas;
+import cds.gen.catalogservice.NoteDatas_;
 import cds.gen.catalogservice.WorkEfforts;
+import cds.gen.my.bookshop.NoteData;
 
 @Component
 @ServiceName(CatalogService_.CDS_NAME)
@@ -70,7 +74,7 @@ public class CatalogServiceHandler implements EventHandler {
 		// CustRequestItems custRequestItem = custRequest.getCustRequestItem();
 		// if (custRequestItem == null) {
 		// 	custRequestItem = CustRequestItems.create();
-		// 	custRequestItem.put("custRequestItemSeqId", "00001");
+		// 	custRequestItem.put("custRequestItemSeqId", "10");
 		// 	custRequestItem.put("custRequestId", custRequest.getCustRequestId());
 		// 	Iterable<? extends Map<String, ?>> result =  catalogService.newDraft(Insert.into(CustRequestItems_.class).entry(custRequestItem));
 		// 	context.setResult(result);
@@ -80,6 +84,24 @@ public class CatalogServiceHandler implements EventHandler {
 	@Before(event = DraftService.EVENT_DRAFT_CREATE)
 	public void BeforeCreateDraft(DraftCreateEventContext context) {
 		System.out.println("------------------------------- in before draft create event handler");
+	}
+	@On(event = DraftService.EVENT_DRAFT_CREATE)
+	public void OnCreateCustRequestNotesDraft(DraftCreateEventContext context, CustRequestNotes custRequestNote) {
+		System.out.println("------------------------------- on CustRequestNotes draft create event handler");
+		if (custRequestNote.getNoteId() == null) {
+			System.out.println("noteId is null");
+			String noteId = UUID.randomUUID().toString();
+			custRequestNote.setNoteId(noteId);
+		}
+	}
+	@After(event = DraftService.EVENT_DRAFT_CREATE)
+	public void AfterCreateCustRequestNotesDraft(DraftCreateEventContext context, CustRequestNotes custRequestNote) {
+		System.out.println("------------------------------- after CustRequestNotes draft create event handler");
+		NoteDatas noteDatas = NoteDatas.create();
+		String noteId = custRequestNote.getNoteId();
+		noteDatas.setNoteId(noteId);
+		DraftService service = (DraftService) context.getService();
+		NoteDatas result = service.newDraft(Insert.into(NoteDatas_.class).entry(noteDatas)).single(NoteDatas.class);
 	}
 
 	@After(event = CqnService.EVENT_CREATE)
@@ -115,7 +137,7 @@ public class CatalogServiceHandler implements EventHandler {
 		CustRequests result = service.newDraft(Insert.into(CustRequests_.class).entry(custRequests)).single(CustRequests.class);
 		// insert CustRequestItems
 		CustRequestItems custRequestItem = CustRequestItems.create();
-		custRequestItem.put("custRequestItemSeqId", "00001");
+		custRequestItem.put("custRequestItemSeqId", "10");
 		custRequestItem.put("custRequestId", custRequests.getCustRequestId());
 		service.newDraft(Insert.into(CustRequestItems_.class).entry(custRequestItem));
 		// insert FixedAssetFault

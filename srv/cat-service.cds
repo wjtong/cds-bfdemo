@@ -16,6 +16,11 @@ service CatalogService @(requires: 'authenticated-user') {
         fixedAssetFault : Composition of one FixedAssetFaults on custRequestId = fixedAssetFault.custRequestId and custRequestItemSeqId = fixedAssetFault.custRequestItemSeqId;
     };
 
+    extend my.CustRequestNote with {
+        noteData : Composition of NoteDatas on noteData.noteId = noteId;
+    };
+    
+
     entity CustRequestItems as select from my.CustRequestItem {
         *,
         null as computedField : String,
@@ -35,6 +40,10 @@ service CatalogService @(requires: 'authenticated-user') {
     entity FixedAssets as projection on my.FixedAsset;
 
     entity FixedAssetFaults as projection on my.FixedAssetFault;
+
+    entity NoteDatas as projection on my.NoteData;
+
+    entity CustRequestNotes as projection on my.CustRequestNote;
  
     // access control restrictions
     // annotate CustRequests with @restrict : [

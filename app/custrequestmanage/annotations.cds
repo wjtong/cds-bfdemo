@@ -35,15 +35,7 @@ annotate service.CustRequests with @(
                 Value : fromPartyId,
             },
         ],
-    },
-    UI.Facets : [
-        {
-            $Type : 'UI.ReferenceFacet',
-            ID : 'BASEINFO',
-            Target : '@UI.FieldGroup#BaseInfo'
-        }
-    ]
-);
+    });
 annotate service.CustRequests with @(
     UI.DataPoint #ID : {
         $Type : 'UI.DataPointType',
@@ -91,3 +83,36 @@ annotate service.CustRequestItems with {
         },
     };
 };
+
+annotate service.CustRequests with @(
+    UI.Facets : [
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID : 'BASEINFO',
+            Target : '@UI.FieldGroup#BaseInfo',
+        },
+        {
+            $Type : 'UI.ReferenceFacet',
+            Target : 'custRequestNote/@UI.LineItem',
+            Label : 'Notes',
+            ID : 'CUSTREQUESTNOTE',
+        },
+    ]
+);
+annotate service.CustRequestNotes with @(
+    UI.LineItem : [
+        {
+            $Type : 'UI.DataField',
+            Value : noteId,
+            Label : 'Note ID',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : noteData.noteName,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : noteData.noteInfo,
+        },
+    ]
+);
