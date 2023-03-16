@@ -22,6 +22,8 @@ service CatalogService @(requires: 'authenticated-user') {
         product.productName as productName
     };
 
+    // entity CustRequestItems as projection on my.CustRequestItem;
+
     entity Products as projection on my.Product;
 
     entity Parties as projection on my.Party;

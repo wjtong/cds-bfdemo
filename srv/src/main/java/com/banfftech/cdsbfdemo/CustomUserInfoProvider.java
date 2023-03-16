@@ -32,10 +32,11 @@ public class CustomUserInfoProvider implements UserInfoProvider {
         }
         System.out.println(userInfo.toString());
         userInfo.addRole("users");
-        if (RequestContextHolder.getRequestAttributes() != null) {
-            userInfo.setName(httpServletRequest.getHeader("custom-username-header"));
+        userInfo.addRole("authenticated-user");
+        // if (RequestContextHolder.getRequestAttributes() != null) {
+        //     userInfo.setName(httpServletRequest.getHeader("custom-username-header"));
             
-        }
+        // }
         userInfo.setIsAuthenticated(true);
         // userInfo = null;
         return userInfo;

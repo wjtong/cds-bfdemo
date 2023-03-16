@@ -19,12 +19,12 @@ entity CustRequest : managed {
   statusId : String;
   fromPartyId : String;
   party : Association to Party on party.partyId = fromPartyId;
-  custRequestItem : Composition of one CustRequestItem on custRequestItem.custRequestId = custRequestId and custRequestItem.custRequestItemSeqId = 00001;
+  custRequestItem : Composition of one CustRequestItem on custRequestItem.custRequestId = custRequestId and custRequestItem.custRequestItemSeqId = 0001;
 }
 
 entity CustRequestItem : managed {
   key custRequestId : String;
-  key custRequestItemSeqId : String default 00001;
+  key custRequestItemSeqId : String default 0001;
   custRequest : Association to CustRequest on custRequest.custRequestId = custRequestId; 
   productId : String; 
   quantity : Double;
