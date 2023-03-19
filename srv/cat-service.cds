@@ -13,7 +13,7 @@ service CatalogService @(requires: 'authenticated-user') {
     };
 
     extend my.CustRequestItem with {
-        fixedAssetFault : Composition of one FixedAssetFaults on custRequestId = fixedAssetFault.custRequestId and custRequestItemSeqId = fixedAssetFault.custRequestItemSeqId;
+        // fixedAssetFault : Composition of one FixedAssetFaults on fixedAssetFault.custRequestItems = $self;
     };
 
     extend my.CustRequestNote with {

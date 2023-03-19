@@ -112,7 +112,7 @@ public class CatalogServiceHandler implements EventHandler {
 		WorkEfforts workEfforts = WorkEfforts.create();
 		workEfforts.setWorkEffortId(UUID.randomUUID().toString());
 		CustRequestWorkEfforts custRequestWorkEfforts = CustRequestWorkEfforts.create();
-		custRequestWorkEfforts.setCustRequestId(custRequest.getCustRequestId());
+		custRequestWorkEfforts.setCustRequestId(custRequest.getId());
 		custRequestWorkEfforts.setWorkEffortId(workEfforts.getWorkEffortId());
 		Insert workEffortInsert = Insert.into(WORK_EFFORTS).entry(workEfforts);
 		Insert custRequestWorkEffortInsert = Insert.into(CustRequestWorkEfforts_.class).entry(custRequestWorkEfforts);
@@ -130,26 +130,29 @@ public class CatalogServiceHandler implements EventHandler {
 		DraftService service = (DraftService) context.getService();
 		Row row = service.run(select).single();
 		String fixedAssetId = row.getPath("fixedAssetId");
-		System.out.println(service);
+
 		// insert CustRequests
 		CustRequests custRequests = CustRequests.create();
-		String custRequestId = UUID.randomUUID().toString();
-		custRequests.setCustRequestId(custRequestId);
+		custRequests.setId(UUID.randomUUID().toString());
+		// custRequestItem.setCustRequest(custRequests);
+		// custRequests.setItems(custRequestItem);
 		CustRequests result = service.newDraft(Insert.into(CustRequests_.class).entry(custRequests)).single(CustRequests.class);
+
 		// insert CustRequestItems
 		CustRequestItems custRequestItem = CustRequestItems.create();
-		custRequestItem.put("custRequestItemSeqId", "10");
-		custRequestItem.put("custRequestId", custRequests.getCustRequestId());
+		custRequestItem.setItemSeqId("10");
+		custRequestItem.setCustRequestId(custRequests.getId());
 		service.newDraft(Insert.into(CustRequestItems_.class).entry(custRequestItem));
+
 		// insert FixedAssetFault
 		FixedAssetFaults fixedAssetFault = FixedAssetFaults.create();
-		fixedAssetFault.setFixedAssetFaultId(UUID.randomUUID().toString());
-		fixedAssetFault.setFixedAssetId(fixedAssetId);
-		fixedAssetFault.setCustRequestId(custRequestItem.getCustRequestId());
-		fixedAssetFault.setCustRequestItemSeqId(custRequestItem.getCustRequestItemSeqId());
+		fixedAssetFault.setId(UUID.randomUUID().toString());
+		fixedAssetFault.setFixedAssetFixedAssetId(fixedAssetId);
+		fixedAssetFault.setCustRequestItemsCustRequestId(custRequestItem.getCustRequestId());
+		fixedAssetFault.setCustRequestItemsItemSeqId(custRequestItem.getItemSeqId());
 		service.newDraft(Insert.into(FixedAssetFaults_.class).entry(fixedAssetFault));
 		custRequestItem.setFixedAssetFault(fixedAssetFault);
-		custRequests.setCustRequestItem(custRequestItem);
+		custRequests.setItems(custRequestItem);
 		context.setResult(result);
 		// custRequests.setCustRequestName(co);
 	}

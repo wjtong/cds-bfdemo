@@ -12,25 +12,24 @@ entity Books {
   stock  : Integer;
 }
 
-entity CustRequest : managed {
-  key custRequestId : String;
+entity CustRequest : cuid,managed {
   custRequestName: String @title : '{i18n>CustRequestName}';
   description: String;
   statusId : String;
   fromPartyId : String;
   party : Association to Party on party.partyId = fromPartyId;
-  custRequestNote : Composition of many CustRequestNote on custRequestNote.custRequestId = custRequestId;
-  custRequestItem : Composition of one CustRequestItem on custRequestItem.custRequestId = custRequestId and custRequestItem.custRequestItemSeqId = 10;
+  CustRequestNote : Composition of many CustRequestNote on CustRequestNote.custRequest = $self;
+  Items : Composition of one CustRequestItem on Items.custRequest = $self;
 }
 
 entity CustRequestItem : managed {
-  key custRequestId : String;
-  key custRequestItemSeqId : String default 0001;
-  custRequest : Association to CustRequest on custRequest.custRequestId = custRequestId; 
+  key custRequest : Association to CustRequest;
+  key itemSeqId : String default 10;
   productId : String; 
   quantity : Double;
   product : Association to one Product on product.productId = productId;
-  // fixedAssetFault : Composition of one FixedAssetFault on custRequestId = fixedAssetFault.custRequestId and custRequestItemSeqId = fixedAssetFault.custRequestItemSeqId;
+  // fixedAssetFault : Composition of one FixedAssetFault on custRequestId = fixedAssetFault.custRequestId and itemSeqId = fixedAssetFault.itemSeqId;
+  fixedAssetFault : Composition of one FixedAssetFault on fixedAssetFault.custRequestItems = $self;
 }
 
 entity Product {
@@ -52,9 +51,8 @@ entity WorkEffort {
 }
 
 entity CustRequestWorkEffort {
-  key custRequestId : String;
   key workEffortId : String;
-  custRequest : Association to one CustRequest on custRequest.custRequestId = custRequestId;
+  key custRequest : Association to one CustRequest;
   workEffort : Association to one WorkEffort on workEffort.workEffortId = workEffortId;
 }
 
@@ -65,15 +63,12 @@ entity FixedAsset {
   serialNumber : String;
 }
 
-entity FixedAssetFault {
-  key fixedAssetFaultId : String;
-  fixedAssetId : String;
-  fixedAsset : Association to one FixedAsset on fixedAssetId = fixedAsset.fixedAssetId;
-  custRequestId : String;
-  custRequestItemSeqId : String;
-  custRequest : Association to one CustRequest on custRequestId = custRequest.custRequestId;
-  workEffortId : String;
-  workEffort : Association to one WorkEffort on workEffortId = workEffort.workEffortId;
+entity FixedAssetFault : cuid,managed {
+  // fixedAssetId : String;
+  fixedAsset : Association to one FixedAsset;
+  custRequestItems : Association to one CustRequestItem;
+  // workEffortId : String;
+  workEffort : Association to one WorkEffort;
   statusId : String;
   description : String;
 }
@@ -85,8 +80,7 @@ entity NoteData {
 }
 
 entity CustRequestNote {
-  key custRequestId : String;
   key noteId : String @title : '{i18n>NoteId}';
   // noteData : Composition of NoteData on noteData.noteId = noteId;
-  custRequest : Association to CustRequest on custRequest.custRequestId = custRequestId;
+  key custRequest : Association to CustRequest;
 }
