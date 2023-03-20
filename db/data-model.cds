@@ -73,14 +73,13 @@ entity FixedAssetFault : cuid,managed {
   description : String;
 }
 
-entity NoteData {
-  key noteId : String;
+entity NoteData : cuid, managed {
   noteName : String @title : '{i18n>NoteName}';
   noteInfo : String @title : '{i18n>NoteInfo}';
 }
 
 entity CustRequestNote {
-  key noteId : String @title : '{i18n>NoteId}';
-  // noteData : Composition of NoteData on noteData.noteId = noteId;
   key custRequest : Association to CustRequest;
+  // key noteData : Association to NoteData @title : '{i18n>NoteId}';
+  key noteData : Composition of NoteData @title : '{i18n>NoteId}';
 }

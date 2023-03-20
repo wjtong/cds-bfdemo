@@ -16,9 +16,9 @@ service CatalogService @(requires: 'authenticated-user') {
         // fixedAssetFault : Composition of one FixedAssetFaults on fixedAssetFault.custRequestItems = $self;
     };
 
-    extend my.CustRequestNote with {
-        noteData : Composition of my.NoteData on noteData.noteId = noteId;
-    };
+    // extend my.CustRequestNote with {
+    //     noteData : Composition of my.NoteData on noteData.noteId = noteId;
+    // };
     
 
     entity CustRequestItems as select from my.CustRequestItem {
@@ -41,6 +41,7 @@ service CatalogService @(requires: 'authenticated-user') {
 
     entity FixedAssetFaults as projection on my.FixedAssetFault;
 
+    // @odata.draft.enabled
     entity NoteDatas as projection on my.NoteData;
 
     entity CustRequestNotes as projection on my.CustRequestNote;

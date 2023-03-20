@@ -31,6 +31,7 @@ import cds.gen.catalogservice.CatalogService_;
 import cds.gen.catalogservice.CustRequestItems;
 import cds.gen.catalogservice.CustRequestItems_;
 import cds.gen.catalogservice.CustRequestNotes;
+import cds.gen.catalogservice.CustRequestNotes_;
 import cds.gen.catalogservice.CustRequestWorkEfforts;
 import cds.gen.catalogservice.CustRequestWorkEfforts_;
 import cds.gen.catalogservice.CustRequests;
@@ -88,21 +89,24 @@ public class CatalogServiceHandler implements EventHandler {
 	@On(event = DraftService.EVENT_DRAFT_CREATE)
 	public void OnCreateCustRequestNotesDraft(DraftCreateEventContext context, CustRequestNotes custRequestNote) {
 		System.out.println("------------------------------- on CustRequestNotes draft create event handler");
-		if (custRequestNote.getNoteId() == null) {
+		if (custRequestNote.getNoteDataId() == null) {
 			System.out.println("noteId is null");
 			String noteId = UUID.randomUUID().toString();
-			custRequestNote.setNoteId(noteId);
+			custRequestNote.setNoteDataId(noteId);
+			// DraftService service = (DraftService) context.getService();
+			// CustRequestNotes result = service.newDraft(Insert.into(CustRequestNotes_.class).entry(custRequestNote)).single(CustRequestNotes.class);
+			// context.setResult((Iterable<? extends Map<String, ?>>) result);
 		}
 	}
 	@After(event = DraftService.EVENT_DRAFT_CREATE)
 	public void AfterCreateCustRequestNotesDraft(DraftCreateEventContext context, CustRequestNotes custRequestNote) {
 		System.out.println("------------------------------- after CustRequestNotes draft create event handler");
 		NoteDatas noteDatas = NoteDatas.create();
-		String noteId = custRequestNote.getNoteId();
-		noteDatas.setNoteId(noteId);
+		String noteId = custRequestNote.getNoteDataId();
+		noteDatas.setId(noteId);
 		DraftService service = (DraftService) context.getService();
 		NoteDatas result = service.newDraft(Insert.into(NoteDatas_.class).entry(noteDatas)).single(NoteDatas.class);
-		custRequestNote.setNoteData(result);
+		custRequestNote.setNoteData(noteDatas);
 	}
 
 	@After(event = CqnService.EVENT_CREATE)
