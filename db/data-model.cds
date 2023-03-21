@@ -16,8 +16,7 @@ entity CustRequest : cuid,managed {
   custRequestName: String @title : '{i18n>CustRequestName}';
   description: String;
   statusId : String;
-  fromPartyId : String;
-  party : Association to Party on party.partyId = fromPartyId;
+  fromParty : Association to Party;
   CustRequestNote : Composition of many CustRequestNote on CustRequestNote.custRequest = $self;
   Items : Composition of one CustRequestItem on Items.custRequest = $self;
 }
@@ -25,15 +24,14 @@ entity CustRequest : cuid,managed {
 entity CustRequestItem : managed {
   key custRequest : Association to CustRequest;
   key itemSeqId : String default 10;
-  productId : String; 
   quantity : Double;
-  product : Association to one Product on product.productId = productId;
+  product : Association to Product;
   // fixedAssetFault : Composition of one FixedAssetFault on custRequestId = fixedAssetFault.custRequestId and itemSeqId = fixedAssetFault.itemSeqId;
   fixedAssetFault : Composition of one FixedAssetFault on fixedAssetFault.custRequestItems = $self;
 }
 
 entity Product {
-  key productId : String;
+  key ID : String;
   productTypeId : String;
   internalName : String;
   productName : String;
@@ -41,7 +39,7 @@ entity Product {
 }
 
 entity Party {
-  key partyId : String;
+  key ID : String;
   partyName : String;
 }
 
@@ -58,8 +56,7 @@ entity CustRequestWorkEffort {
 
 entity FixedAsset {
   key fixedAssetId : String;
-  instanceOfProductId : String;
-  instanceOfProduct : Association to one Product on instanceOfProductId = instanceOfProduct.productId;
+  instanceOfProduct : Association to Product;
   serialNumber : String;
 }
 

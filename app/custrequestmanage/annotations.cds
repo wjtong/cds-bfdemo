@@ -10,7 +10,7 @@ annotate service.CustRequests with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : Items.productId,
+                Value : Items.product_ID,
             },
             {
                 $Type : 'UI.DataField',
@@ -18,7 +18,7 @@ annotate service.CustRequests with @(
             },
             {
                 $Type : 'UI.DataField',
-                Value : fromPartyId,
+                Value : fromParty_ID,
             },
         ],
     });
@@ -36,39 +36,40 @@ annotate service.CustRequests with @(
         },
     ]
 ) {
-    fromPartyId @Common : { 
-        ValueList : {
-            $Type : 'Common.ValueListType',
-            CollectionPath : 'Parties',
-            Parameters : [
-                {
-                    $Type : 'Common.ValueListParameterInOut',
-                    LocalDataProperty : fromPartyId,
-                    ValueListProperty : 'partyId'
-                },
-            ]
-        },
-    }
+    // fromPartyId @Common : { 
+    //     ValueList : {
+    //         $Type : 'Common.ValueListType',
+    //         CollectionPath : 'Parties',
+    //         Parameters : [
+    //             {
+    //                 $Type : 'Common.ValueListParameterInOut',
+    //                 LocalDataProperty : fromPartyId,
+    //                 ValueListProperty : 'partyId'
+    //             },
+    //         ]
+    //     },
+    // }
+
     // party
     // @ValueList.entity : 'Parties';
 };
-annotate service.CustRequestItems with {
-    productId @Common : {
-        Text : product.productName,
-        TextArrangement : #TextOnly,
-        ValueList : {
-            $Type : 'Common.ValueListType',
-            CollectionPath : 'Products',
-            Parameters : [
-                {
-                    $Type : 'Common.ValueListParameterInOut',
-                    LocalDataProperty : productId,
-                    ValueListProperty : 'productId'
-                },
-            ]
-        },
-    };
-};
+// annotate service.CustRequestItems with {
+//     product_ID @Common : {
+//         Text : product.productName,
+//         TextArrangement : #TextOnly,
+//         ValueList : {
+//             $Type : 'Common.ValueListType',
+//             CollectionPath : 'Products',
+//             Parameters : [
+//                 {
+//                     $Type : 'Common.ValueListParameterInOut',
+//                     LocalDataProperty : product_ID,
+//                     ValueListProperty : 'ID'
+//                 },
+//             ]
+//         },
+//     };
+// };
 
 annotate service.CustRequests with @(
     UI.Facets : [
@@ -111,7 +112,7 @@ annotate service.CustRequests with @(
         },
         {
             $Type : 'UI.DataField',
-            Value : Items.productId,
+            Value : Items.product_ID,
             Label : 'Product ID',
         },
         {
