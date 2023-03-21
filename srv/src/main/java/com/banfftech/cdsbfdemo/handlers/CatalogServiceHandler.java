@@ -90,11 +90,11 @@ public class CatalogServiceHandler implements EventHandler {
 	@On(event = DraftService.EVENT_DRAFT_CREATE)
 	public void OnCreateCustRequestNotesDraft(DraftCreateEventContext context, CustRequestNotes custRequestNote) {
 		System.out.println("------------------------------- On CustRequestNotes draft create event handler");
-		if (custRequestNote.getNoteDataId() == null) {
-			System.out.println("noteId is null");
-			String noteId = UUID.randomUUID().toString();
-			custRequestNote.setNoteDataId(noteId);
-		}
+		// if (custRequestNote.getNoteDataId() == null) {
+		// 	System.out.println("noteId is null");
+		// 	String noteId = UUID.randomUUID().toString();
+		// 	custRequestNote.setNoteDataId(noteId);
+		// }
 	}
 	@After(event = DraftService.EVENT_DRAFT_CREATE)
 	public void AfterCreateCustRequestNotesDraft(DraftCreateEventContext context, CustRequestNotes custRequestNote) {
