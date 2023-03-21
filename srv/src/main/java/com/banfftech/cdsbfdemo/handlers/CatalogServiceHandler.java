@@ -26,7 +26,7 @@ import com.sap.cds.services.handler.annotations.Before;
 import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
 
-import cds.gen.catalogservice.ActivateCustRequestsActionContext;
+// import cds.gen.catalogservice.ActivateCustRequestsActionContext;
 import cds.gen.catalogservice.Books;
 import cds.gen.catalogservice.CatalogService_;
 import cds.gen.catalogservice.CustRequestItems;
@@ -159,10 +159,10 @@ public class CatalogServiceHandler implements EventHandler {
 		// custRequests.setCustRequestName(co);
 	}
 
-	@On(entity = CustRequests_.CDS_NAME)
-	public void activateCustRequestsAction(ActivateCustRequestsActionContext context) {
-		System.out.println("------------------------------- in activateCustRequestsAction");
-		CustRequests custRequests = CustRequests.create();
-		// custRequests.setCustRequestName(co);
-	}
+	// @On(entity = CustRequests_.CDS_NAME)
+	// public void activateCustRequestsAction(ActivateCustRequestsActionContext context) {
+	// 	System.out.println("------------------------------- in activateCustRequestsAction");
+	// 	CustRequests custRequests = CustRequests.create();
+	// 	// custRequests.setCustRequestName(co);
+	// }
 }
