@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
 
+import com.sap.cds.Result;
 import com.sap.cds.Row;
 import com.sap.cds.ql.Insert;
 import com.sap.cds.ql.Select;
@@ -88,14 +89,11 @@ public class CatalogServiceHandler implements EventHandler {
 	}
 	@On(event = DraftService.EVENT_DRAFT_CREATE)
 	public void OnCreateCustRequestNotesDraft(DraftCreateEventContext context, CustRequestNotes custRequestNote) {
-		System.out.println("------------------------------- on CustRequestNotes draft create event handler");
+		System.out.println("------------------------------- On CustRequestNotes draft create event handler");
 		if (custRequestNote.getNoteDataId() == null) {
 			System.out.println("noteId is null");
 			String noteId = UUID.randomUUID().toString();
 			custRequestNote.setNoteDataId(noteId);
-			// DraftService service = (DraftService) context.getService();
-			// CustRequestNotes result = service.newDraft(Insert.into(CustRequestNotes_.class).entry(custRequestNote)).single(CustRequestNotes.class);
-			// context.setResult((Iterable<? extends Map<String, ?>>) result);
 		}
 	}
 	@After(event = DraftService.EVENT_DRAFT_CREATE)
@@ -106,7 +104,7 @@ public class CatalogServiceHandler implements EventHandler {
 		noteDatas.setId(noteId);
 		DraftService service = (DraftService) context.getService();
 		NoteDatas result = service.newDraft(Insert.into(NoteDatas_.class).entry(noteDatas)).single(NoteDatas.class);
-		custRequestNote.setNoteData(noteDatas);
+		// custRequestNote.setNoteData(result);
 	}
 
 	@After(event = CqnService.EVENT_CREATE)

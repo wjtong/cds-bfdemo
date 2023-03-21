@@ -89,7 +89,7 @@ annotate service.CustRequestNotes with @(
     UI.LineItem : [
         {
             $Type : 'UI.DataField',
-            Value : noteId,
+            Value : noteData_ID,
             Label : 'Note ID',
         },
         {
