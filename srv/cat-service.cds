@@ -21,13 +21,13 @@ service CatalogService @(requires: 'authenticated-user') {
     // };
     
 
-    // entity CustRequestItems as select from my.CustRequestItem {
-    //     *,
-    //     null as computedField : String,
-    //     product.productName as productName
-    // };
+    entity CustRequestItems as select from my.CustRequestItem {
+        *,
+        null as computedField : String,
+        product.productName as productName
+    };
 
-    entity CustRequestItems as projection on my.CustRequestItem;
+    // entity CustRequestItems as projection on my.CustRequestItem;
 
     @cds.odata.valuelist
     entity Products as projection on my.Product;
