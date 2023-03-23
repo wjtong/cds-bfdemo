@@ -17,12 +17,6 @@ import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.After;
 import com.sap.cds.services.handler.annotations.ServiceName;
 
-/**
- * 如何进到ServiceHandler：
- * 例如当前的Service的配置，实现EventHandler接口并添加ServiceName和spring注入的注解，在ServiceName注解中指定引用实体数据的service.cds名称。
- * 好，方法的定义，方法需要添加切面注解，注解event属性可以是CRUD和Draft模式下CRUD的所有操作,包括Draft的new、edit、save、cancel...
- * 在切面注解entity属性中指定实体名称, 就会自动进入到这个方法, 如果参数的类型是实体对应的JavaBean，或者JavaBean类型的Stream那么注解不指定实体名称也可以进入
- */
 @Component
 @ServiceName(CatalogService_.CDS_NAME)
 public class CatalogServiceHandler implements EventHandler {
@@ -45,7 +39,7 @@ public class CatalogServiceHandler implements EventHandler {
     @After(event = CqnService.EVENT_READ)
     public void readCustrequests(Stream<CustRequests> cusrequests) {
         //Highlight 添加语义化字段
-        cusrequests.forEach(cr -> cr.setProcessingResultLevel(new Random().nextInt(5) + 1));
+         cusrequests.forEach(cr -> cr.setProcessingResultLevel(new Random().nextInt(5) + 1));
     }
 
     @After(event = DraftService.EVENT_DRAFT_NEW)
@@ -62,7 +56,7 @@ public class CatalogServiceHandler implements EventHandler {
                 custRequestItems.setCustRequestItemSeqId("00001");
                 custRequestItems.setProductId("p_001");
                 Insert insert = Insert.into(CustRequestItems_.CDS_NAME).entry(custRequestItems);
-                Result runResult = catalogService.run(insert);
+                Result runResult = catalogService.newDraft(insert);
                 CustRequestItems createdItem = runResult.single().as(CustRequestItems.class);
                 System.out.println(">>>> created Item proId:" + createdItem.getProductId());
 				cr.setCustRequestItem(createdItem);
