@@ -26,6 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import static com.banfftech.cdsbfdemo.controller.LoginController.CSRF_TOKEN;
 
 /**
  * FE保存变体接口
@@ -36,11 +37,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Controller
 @RequestMapping("sap/bc/lrep")
 public class VariantController {
-
-    /**
-     * csrfToken名称
-     */
-    private static final String CSRF_TOKEN = "X-CSRF-Token";
 
     /**
      * csrfToken列表

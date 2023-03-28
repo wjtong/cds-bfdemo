@@ -13,9 +13,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +28,11 @@ import java.util.Map;
  */
 @Controller
 public class LoginController {
+
+    /**
+     * csrfToken名称
+     */
+    public static final String CSRF_TOKEN = "X-CSRF-Token";
 
     @Resource
     PersistenceService dbService;
@@ -50,8 +56,6 @@ public class LoginController {
         }
         UserLogin registerUserLogin = UserLogin.create();
         registerUserLogin.setUserLoginId(userLoginId);
-        String passStr = AuthenticationUtil.md5encrypt(password);
-        System.out.println("passStr = " + passStr);
         registerUserLogin.setCurrentPassword(AuthenticationUtil.md5encrypt(password));
         dbService.run(Insert.into(UserLogin_.CDS_NAME).entry(registerUserLogin));
         return new ControllerRes(200, "success");
@@ -83,7 +87,7 @@ public class LoginController {
         //生成token, 可以放一些不敏感的数据 类似partyId或firstName
         tokenParam.put("userLoginId", userLogin.getUserLoginId());
         String newToken = AuthenticationUtil.generateToken(tokenParam);
-        response.setHeader("access_token", newToken);
+        response.setHeader(CSRF_TOKEN, newToken);
         return new ControllerRes(200, "success");
     }
 
@@ -92,8 +96,20 @@ public class LoginController {
      */
     @ResponseBody
     @RequestMapping("/tokenErr")
-    public ControllerRes tokenErr() {
+    public ControllerRes tokenErr(HttpServletResponse response) {
+        response.setStatus(401);
         return new ControllerRes(401, "Authentication failure");
+    }
+
+
+    /**
+     * 跳转到登陆页面
+     */
+    @RequestMapping("/toLogin")
+    public String toLogin(HttpServletRequest request) {
+        String requestUrl = request.getRequestURL().toString();
+        String hostUrl = requestUrl.substring(0, requestUrl.indexOf("/", requestUrl.indexOf("/") + 2));
+        return "redirect:" + hostUrl + "/login/index.html";
     }
 
 }
