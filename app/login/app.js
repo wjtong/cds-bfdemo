@@ -2,7 +2,7 @@
  * @Author: lx.jin 308561217@qq.com
  * @Date: 2023-03-24 23:22:53
  * @LastEditors: lx.jin 308561217@qq.com
- * @LastEditTime: 2023-03-28 19:31:28
+ * @LastEditTime: 2023-03-28 20:22:26
  * @FilePath: /cloud-cap-samples-java-main/app/login/app.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -11,28 +11,28 @@ const httpClient = axios.create({
   withCredentials: true,
 });
 
-// adding csrf token to request headers
-// axios
-//   .head("/api/browse", {
-//     headers: {
-//       "X-CSRF-Token": "Fetch",
-//       "X-Requested-With": "XMLHttpRequest",
-//     },
-//   })
-//   .then((res) => {
-//     xcsrfToken = res.headers["x-csrf-token"];
-//     httpClient.defaults.headers.common["X-CSRF-Token"] = xcsrfToken;
-//   });
-
-const GET = (url) => httpClient.get("/api/browse" + url);
-const bfLogin = (data) => httpClient.post("/bfLogin", data);
+const bfLogin = async (data) => httpClient.post("/bfLogin", data).then((res) => {
+  const { data, code } = res.data
+  if (code < 300) {
+    const xcsrfToken = res.headers["x-csrf-token"];
+    console.log({ xcsrfToken })
+    httpClient.defaults.headers.common["X-CSRF-Token"] = xcsrfToken;
+    return data
+  } else {
+    antd.message.error(data.data);
+    return false
+  }
+});
 
 const Login = () => {
-  const [number, setNumber] = React.useState(0);
-
   const onFinish = async (values) => {
     const result = await bfLogin(values)
-    console.log('Success:', values, result);
+    console.log('Success:', { values, result, window: window.location });
+    if (result) {
+      const href = window.location.origin + '/custrequestmanage/webapp/index.html#Shell-home'
+      console.log({ href })
+      location.replace(href);
+    }
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -52,7 +52,7 @@ const Login = () => {
           name="basic"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 24 }}
-          initialValues={{ remember: true }}
+          initialValues={{ userLoginId: 'bfadmin', password: 'cap' }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           autoComplete="off"
