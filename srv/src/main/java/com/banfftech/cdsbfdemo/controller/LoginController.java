@@ -9,10 +9,10 @@ import com.sap.cds.ql.Insert;
 import com.sap.cds.ql.Select;
 import com.sap.cds.services.persistence.PersistenceService;
 import lombok.NonNull;
+import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -64,13 +64,13 @@ public class LoginController {
     /**
      * 用户登录 核验账密并响应token
      *
-     * @param userLoginId 登录账户
-     * @param password    登陆密码
      * @return 响应一个Jwt token
      */
     @ResponseBody
     @PostMapping("/bfLogin")
-    public ControllerRes login(@NonNull String userLoginId, @NonNull String password, HttpServletResponse response) {
+    public ControllerRes login(@RequestBody JSONObject jsonObject, HttpServletResponse response) {
+        String userLoginId = jsonObject.getString("userLoginId");
+        String password = jsonObject.getString("password");
         //查询用户
         Result result = dbService.run(Select.from(UserLogin_.class)
                 .where(userLogin -> userLogin.userLoginId().eq(userLoginId)));
