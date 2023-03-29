@@ -34,7 +34,7 @@ public class AuthFilter implements Filter{
      * 需要认证的接口
      */
     private static final Set<String> AUTH_PATHS = Collections.unmodifiableSet(new HashSet<>(
-            Arrays.asList("/odata/v4", "/fiori.html", "sap/bc/lrep")));
+            Arrays.asList("/odata/v4", "sap/bc/lrep")));
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws ServletException, IOException {
@@ -49,11 +49,8 @@ public class AuthFilter implements Filter{
             }
             filterChain.doFilter(servletRequest, servletResponse);
         } catch (JWTVerificationException e) {
-            if (requestUrl.contains("fiori.html")) {
-                request.getRequestDispatcher("/toLogin").forward(request, response);
-            } else {
-                request.getRequestDispatcher("/tokenErr").forward(request, response);
-            }
+            request.getRequestDispatcher("/toLogin").forward(request, response);
+//            request.getRequestDispatcher("/tokenErr").forward(request, response);
         }
     }
 
