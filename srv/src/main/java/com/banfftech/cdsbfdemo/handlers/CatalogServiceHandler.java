@@ -9,7 +9,6 @@ import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
 
-import com.sap.cds.Result;
 import com.sap.cds.Row;
 import com.sap.cds.ql.Insert;
 import com.sap.cds.ql.Select;
@@ -32,7 +31,6 @@ import cds.gen.catalogservice.CatalogService_;
 import cds.gen.catalogservice.CustRequestItems;
 import cds.gen.catalogservice.CustRequestItems_;
 import cds.gen.catalogservice.CustRequestNotes;
-import cds.gen.catalogservice.CustRequestNotes_;
 import cds.gen.catalogservice.CustRequestWorkEfforts;
 import cds.gen.catalogservice.CustRequestWorkEfforts_;
 import cds.gen.catalogservice.CustRequests;
@@ -44,7 +42,6 @@ import cds.gen.catalogservice.NewCustRequestsActionContext;
 import cds.gen.catalogservice.NoteDatas;
 import cds.gen.catalogservice.NoteDatas_;
 import cds.gen.catalogservice.WorkEfforts;
-import cds.gen.my.bookshop.NoteData;
 
 @Component
 @ServiceName(CatalogService_.CDS_NAME)
@@ -87,23 +84,27 @@ public class CatalogServiceHandler implements EventHandler {
 	public void BeforeCreateDraft(DraftCreateEventContext context) {
 		System.out.println("------------------------------- in before draft create event handler");
 	}
+	@Before(event = DraftService.EVENT_DRAFT_CREATE)
+	public void BeforeCreateDraft(DraftCreateEventContext context, CustRequestNotes custRequestNote) {
+		System.out.println("------------------------------- before custRequestNote draft create event handler");
+		NoteDatas noteDatas = NoteDatas.create();
+		DraftService service = (DraftService) context.getService();
+		NoteDatas createdNoteDatas = service.newDraft(Insert.into(NoteDatas_.class).entry(noteDatas)).single(NoteDatas.class);
+		// custRequestNote.setNoteData(createdNoteDatas);
+		custRequestNote.setNoteDataId(createdNoteDatas.getId());
+	}
 	@On(event = DraftService.EVENT_DRAFT_CREATE)
 	public void OnCreateCustRequestNotesDraft(DraftCreateEventContext context, CustRequestNotes custRequestNote) {
 		System.out.println("------------------------------- On CustRequestNotes draft create event handler");
-		// if (custRequestNote.getNoteDataId() == null) {
-		// 	System.out.println("noteId is null");
-		// 	String noteId = UUID.randomUUID().toString();
-		// 	custRequestNote.setNoteDataId(noteId);
-		// }
 	}
 	@After(event = DraftService.EVENT_DRAFT_CREATE)
 	public void AfterCreateCustRequestNotesDraft(DraftCreateEventContext context, CustRequestNotes custRequestNote) {
 		System.out.println("------------------------------- after CustRequestNotes draft create event handler");
-		NoteDatas noteDatas = NoteDatas.create();
-		String noteId = custRequestNote.getNoteDataId();
-		noteDatas.setId(noteId);
 		DraftService service = (DraftService) context.getService();
-		NoteDatas result = service.newDraft(Insert.into(NoteDatas_.class).entry(noteDatas)).single(NoteDatas.class);
+		// NoteDatas noteDatas = NoteDatas.create();
+		// String noteId = custRequestNote.getNoteDataId();
+		// noteDatas.setId(noteId);
+		// NoteDatas result = service.newDraft(Insert.into(NoteDatas_.class).entry(noteDatas)).single(NoteDatas.class);
 		// custRequestNote.setNoteData(result);
 	}
 
