@@ -17,8 +17,9 @@ entity CustRequest : cuid,managed {
   description: String;
   statusId : String;
   fromParty : Association to Party;
-  CustRequestNote : Composition of many CustRequestNote on CustRequestNote.custRequest = $self;
   Items : Composition of one CustRequestItem on Items.custRequest = $self;
+  custRequestParty : Composition of many CustRequestParty on custRequestParty.custRequest = $self;
+  CustRequestNote : Composition of many CustRequestNote on CustRequestNote.custRequest = $self;
 }
 
 entity CustRequestItem : managed {
@@ -79,4 +80,10 @@ entity CustRequestNote {
   key custRequest : Association to CustRequest;
   // key noteData : Association to NoteData @title : '{i18n>NoteId}';
   key noteData : Composition of NoteData @title : '{i18n>NoteId}';
+}
+
+entity CustRequestParty {
+  key custRequest : Association to CustRequest;
+  key party : Association to Party;
+  roleTypeId : String;
 }

@@ -84,15 +84,6 @@ public class CatalogServiceHandler implements EventHandler {
 	public void BeforeCreateDraft(DraftCreateEventContext context) {
 		System.out.println("------------------------------- in before draft create event handler");
 	}
-	@Before(event = DraftService.EVENT_DRAFT_CREATE)
-	public void BeforeCreateDraft(DraftCreateEventContext context, CustRequestNotes custRequestNote) {
-		System.out.println("------------------------------- before custRequestNote draft create event handler");
-		NoteDatas noteDatas = NoteDatas.create();
-		DraftService service = (DraftService) context.getService();
-		NoteDatas createdNoteDatas = service.newDraft(Insert.into(NoteDatas_.class).entry(noteDatas)).single(NoteDatas.class);
-		// custRequestNote.setNoteData(createdNoteDatas);
-		custRequestNote.setNoteDataId(createdNoteDatas.getId());
-	}
 	@On(event = DraftService.EVENT_DRAFT_CREATE)
 	public void OnCreateCustRequestNotesDraft(DraftCreateEventContext context, CustRequestNotes custRequestNote) {
 		System.out.println("------------------------------- On CustRequestNotes draft create event handler");

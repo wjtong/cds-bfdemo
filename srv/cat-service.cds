@@ -47,6 +47,8 @@ service CatalogService @(requires: 'authenticated-user') {
     entity NoteDatas as projection on my.NoteData;
 
     entity CustRequestNotes as projection on my.CustRequestNote;
+
+    entity CustRequestParties as projection on my.CustRequestParty;
  
     // access control restrictions
     // annotate CustRequests with @restrict : [
