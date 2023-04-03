@@ -46,7 +46,10 @@ service CatalogService @(requires: 'authenticated-user') {
     // @odata.draft.enabled
     entity NoteDatas as projection on my.NoteData;
 
-    entity CustRequestNotes as projection on my.CustRequestNote;
+    entity CustRequestNotes as projection on my.CustRequestNote actions {
+        @cds.odata.bindingparameter.collection
+        action addNotes(noteName: String, noteInfo: String) returns CustRequestNotes;
+    };
 
     entity CustRequestParties as projection on my.CustRequestParty;
  

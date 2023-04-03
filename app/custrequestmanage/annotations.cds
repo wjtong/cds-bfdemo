@@ -101,7 +101,17 @@ annotate service.CustRequestNotes with @(
             $Type : 'UI.DataField',
             Value : noteData.noteInfo,
         },
-    ]
+        {
+            $Type : 'UI.DataFieldForAction',
+            Label : '{i18n>AddNotes}',
+            Action : 'CatalogService.addNotes'
+        },
+        // {
+        //     $Type : 'UI.DataField',
+        //     Label : 'Another note info',
+        //     Value : noteData.noteInfo,
+        // },
+   ]
 );
 annotate service.CustRequests with @(
     UI.LineItem : [

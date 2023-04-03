@@ -12,7 +12,10 @@ import org.springframework.stereotype.Component;
 import com.sap.cds.Row;
 import com.sap.cds.ql.Insert;
 import com.sap.cds.ql.Select;
+import com.sap.cds.ql.cqn.CqnAnalyzer;
 import com.sap.cds.ql.cqn.CqnSelect;
+import com.sap.cds.ql.cqn.CqnSource;
+import com.sap.cds.reflect.CdsModel;
 import com.sap.cds.services.EventContext;
 import com.sap.cds.services.cds.CdsCreateEventContext;
 import com.sap.cds.services.cds.CqnService;
@@ -24,7 +27,9 @@ import com.sap.cds.services.handler.annotations.After;
 import com.sap.cds.services.handler.annotations.Before;
 import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
+import com.sap.cds.services.request.ParameterInfo;
 
+import cds.gen.catalogservice.AddNotesContext;
 // import cds.gen.catalogservice.ActivateCustRequestsActionContext;
 import cds.gen.catalogservice.Books;
 import cds.gen.catalogservice.CatalogService_;
@@ -42,6 +47,7 @@ import cds.gen.catalogservice.NewCustRequestsActionContext;
 import cds.gen.catalogservice.NoteDatas;
 import cds.gen.catalogservice.NoteDatas_;
 import cds.gen.catalogservice.WorkEfforts;
+import cds.gen.my.bookshop.CustRequestNote_;
 
 @Component
 @ServiceName(CatalogService_.CDS_NAME)
@@ -151,6 +157,25 @@ public class CatalogServiceHandler implements EventHandler {
 		// custRequests.setCustRequestName(co);
 	}
 
+	@On(entity = "CatalogService.CustRequestNotes", event = "addNotes")
+	public void onAddNotes(AddNotesContext context) {
+		System.out.println("------------------------------- in AddNotesContext action");
+		String noteInfo = context.getNoteInfo();
+		String noteName = context.getNoteName();
+		System.out.println("------------------------------- in AddNotesContext action");
+		CustRequestNotes custRequestNotes = CustRequestNotes.create();
+		ParameterInfo parameterInfo = context.getParameterInfo();
+		CqnSelect cqnSelect = context.getCqn();
+		CqnSource cqnSource = cqnSelect.from();
+		String cqnSourceJson = cqnSource.toJson();
+
+		CdsModel cdsModel = context.getModel();
+		CqnAnalyzer analyzer = CqnAnalyzer.create(cdsModel);
+
+		String custRequestId = (String) analyzer.analyze(context.getCqn()).targetKeys().get(CustRequests.ID);
+
+		context.setResult(custRequestNotes);
+	}
 	// @On(entity = CustRequests_.CDS_NAME)
 	// public void activateCustRequestsAction(ActivateCustRequestsActionContext context) {
 	// 	System.out.println("------------------------------- in activateCustRequestsAction");
