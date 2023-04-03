@@ -47,6 +47,13 @@ service CatalogService @(requires: 'authenticated-user') {
     entity NoteDatas as projection on my.NoteData;
 
     entity CustRequestNotes as projection on my.CustRequestNote actions {
+        @(
+            Common.SideEffects : {
+                TargetProperties : ['_it'],
+                TargetEntities : [_it]
+            },
+            cds.odata.bindingparameter.name : '_it'
+        )
         @cds.odata.bindingparameter.collection
         action addNotes(noteName: String, noteInfo: String) returns CustRequestNotes;
     };
