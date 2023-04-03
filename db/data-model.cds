@@ -79,7 +79,7 @@ entity NoteData : cuid, managed {
 entity CustRequestNote {
   key custRequest : Association to CustRequest;
   // key noteData : Association to NoteData @title : '{i18n>NoteId}';
-  key noteData : Composition of NoteData @title : '{i18n>NoteId}';
+  key noteData : Association to NoteData @title : '{i18n>NoteId}';
 }
 
 entity CustRequestParty {

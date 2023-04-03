@@ -7,8 +7,10 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.sap.cds.Result;
 import com.sap.cds.Row;
 import com.sap.cds.ql.Insert;
 import com.sap.cds.ql.Select;
@@ -27,6 +29,7 @@ import com.sap.cds.services.handler.annotations.After;
 import com.sap.cds.services.handler.annotations.Before;
 import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
+import com.sap.cds.services.persistence.PersistenceService;
 import com.sap.cds.services.request.ParameterInfo;
 
 import cds.gen.catalogservice.AddNotesContext;
@@ -36,6 +39,7 @@ import cds.gen.catalogservice.CatalogService_;
 import cds.gen.catalogservice.CustRequestItems;
 import cds.gen.catalogservice.CustRequestItems_;
 import cds.gen.catalogservice.CustRequestNotes;
+import cds.gen.catalogservice.CustRequestNotes_;
 import cds.gen.catalogservice.CustRequestWorkEfforts;
 import cds.gen.catalogservice.CustRequestWorkEfforts_;
 import cds.gen.catalogservice.CustRequests;
@@ -52,6 +56,11 @@ import cds.gen.my.bookshop.CustRequestNote_;
 @Component
 @ServiceName(CatalogService_.CDS_NAME)
 public class CatalogServiceHandler implements EventHandler {
+	@Autowired
+	private PersistenceService db;
+	@Autowired
+	private DraftService draftService;
+
 	@After(event = CqnService.EVENT_READ)
 	public void discountBooks(Stream<Books> books) {
 		books.filter(b -> b.getTitle() != null && b.getStock() != null)
@@ -162,24 +171,22 @@ public class CatalogServiceHandler implements EventHandler {
 		System.out.println("------------------------------- in AddNotesContext action");
 		String noteInfo = context.getNoteInfo();
 		String noteName = context.getNoteName();
-		System.out.println("------------------------------- in AddNotesContext action");
-		CustRequestNotes custRequestNotes = CustRequestNotes.create();
-		ParameterInfo parameterInfo = context.getParameterInfo();
-		CqnSelect cqnSelect = context.getCqn();
-		CqnSource cqnSource = cqnSelect.from();
-		String cqnSourceJson = cqnSource.toJson();
 
 		CdsModel cdsModel = context.getModel();
 		CqnAnalyzer analyzer = CqnAnalyzer.create(cdsModel);
-
-		String custRequestId = (String) analyzer.analyze(context.getCqn()).targetKeys().get(CustRequests.ID);
-
-		context.setResult(custRequestNotes);
+		String custRequestId = (String) analyzer.analyze(context.getCqn()).rootKeys().get(CustRequests.ID);
+		
+		NoteDatas noteDatas = NoteDatas.create();
+		noteDatas.setNoteInfo(noteInfo);
+		noteDatas.setNoteName(noteName);
+		Insert insertNoteDatas = Insert.into(NoteDatas_.class).entry(noteDatas);
+		NoteDatas createdNoteDatas = db.run(insertNoteDatas).single(NoteDatas.class);
+		String noteId = createdNoteDatas.getId();
+		CustRequestNotes custRequestNotes = CustRequestNotes.create();
+		custRequestNotes.setCustRequestId(custRequestId);
+		custRequestNotes.setNoteDataId(noteId);
+		Insert insertCustRequestNotes = Insert.into(CustRequestNotes_.class).entry(custRequestNotes);
+		CustRequestNotes result = draftService.run(insertCustRequestNotes).single(CustRequestNotes.class);
+		context.setResult(result);
 	}
-	// @On(entity = CustRequests_.CDS_NAME)
-	// public void activateCustRequestsAction(ActivateCustRequestsActionContext context) {
-	// 	System.out.println("------------------------------- in activateCustRequestsAction");
-	// 	CustRequests custRequests = CustRequests.create();
-	// 	// custRequests.setCustRequestName(co);
-	// }
 }
