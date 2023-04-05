@@ -3,14 +3,19 @@ using my.bookshop as my from '../db/data-model';
 service CatalogService @(requires: 'authenticated-user') {
     @readonly entity Books as projection on my.Books;
 
+    extend my.CustRequest with {
+        requestNotes : Composition of many RequestNotes on requestNotes.custRequestId = ID;
+    };
+
     @odata.draft.enabled
     @Common.DraftRoot.NewAction: 'CatalogService.newCustRequestsAction'
-    // @Common.DraftRoot.ActivationAction : 'CatalogService.activateCustRequestsAction'
+   // @Common.DraftRoot.ActivationAction : 'CatalogService.activateCustRequestsAction'
     entity CustRequests as projection on my.CustRequest actions {
         @cds.odata.bindingparameter.collection
         action newCustRequestsAction(serialNumber: String) returns CustRequests;
         // action activateCustRequestsAction() returns CustRequests;
     };
+    
 
     extend my.CustRequestItem with {
         // fixedAssetFault : Composition of one FixedAssetFaults on fixedAssetFault.custRequestItems = $self;
@@ -46,6 +51,23 @@ service CatalogService @(requires: 'authenticated-user') {
     // @odata.draft.enabled
     entity NoteDatas as projection on my.NoteData;
 
+    // entity CustRequestNotes as projection on my.CustRequestNote;
+
+    entity CustRequestParties as projection on my.CustRequestParty;
+
+    // @Common.DraftNode : {
+    //     $Type : 'Common.DraftNodeType',
+    //     PreparationAction : 'CatalogService.prepareRequestNotes'
+    // }
+    entity RequestNotes as select from CustRequestNotes {
+        key noteData.ID as noteId,
+        key custRequest.ID as custRequestId,
+        noteData.noteInfo as noteInfo,
+        noteData.noteName as noteName,
+    } actions {
+        action prepareRequestNotes(SideEffectsQualifier: String) returns RequestNotes;
+    };
+
     entity CustRequestNotes as projection on my.CustRequestNote actions {
         @(
             Common.SideEffects : {
@@ -57,8 +79,6 @@ service CatalogService @(requires: 'authenticated-user') {
         @cds.odata.bindingparameter.collection
         action addNotes(noteName: String, noteInfo: String) returns CustRequestNotes;
     };
-
-    entity CustRequestParties as projection on my.CustRequestParty;
  
     // access control restrictions
     // annotate CustRequests with @restrict : [

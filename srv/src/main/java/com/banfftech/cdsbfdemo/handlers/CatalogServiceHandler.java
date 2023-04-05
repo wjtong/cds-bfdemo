@@ -20,9 +20,13 @@ import com.sap.cds.ql.cqn.CqnSource;
 import com.sap.cds.reflect.CdsModel;
 import com.sap.cds.services.EventContext;
 import com.sap.cds.services.cds.CdsCreateEventContext;
+import com.sap.cds.services.cds.CdsUpdateEventContext;
+import com.sap.cds.services.cds.CdsUpsertEventContext;
 import com.sap.cds.services.cds.CqnService;
 import com.sap.cds.services.draft.DraftCreateEventContext;
 import com.sap.cds.services.draft.DraftNewEventContext;
+import com.sap.cds.services.draft.DraftPrepareEventContext;
+import com.sap.cds.services.draft.DraftSaveEventContext;
 import com.sap.cds.services.draft.DraftService;
 import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.After;
@@ -50,6 +54,9 @@ import cds.gen.catalogservice.FixedAssets_;
 import cds.gen.catalogservice.NewCustRequestsActionContext;
 import cds.gen.catalogservice.NoteDatas;
 import cds.gen.catalogservice.NoteDatas_;
+import cds.gen.catalogservice.PrepareRequestNotesContext;
+import cds.gen.catalogservice.RequestNotes;
+import cds.gen.catalogservice.RequestNotes_;
 import cds.gen.catalogservice.WorkEfforts;
 import cds.gen.my.bookshop.CustRequestNote_;
 
@@ -58,6 +65,7 @@ import cds.gen.my.bookshop.CustRequestNote_;
 public class CatalogServiceHandler implements EventHandler {
 	@Autowired
 	private PersistenceService db;
+
 	@Autowired
 	private DraftService draftService;
 
@@ -100,12 +108,12 @@ public class CatalogServiceHandler implements EventHandler {
 		System.out.println("------------------------------- in before draft create event handler");
 	}
 	@On(event = DraftService.EVENT_DRAFT_CREATE)
-	public void OnCreateCustRequestNotesDraft(DraftCreateEventContext context, CustRequestNotes custRequestNote) {
-		System.out.println("------------------------------- On CustRequestNotes draft create event handler");
+	public void OnCreateCustRequestNotesDraft(DraftCreateEventContext context, RequestNotes requestNote) {
+		System.out.println("------------------------------- On RequestNotes draft create event handler");
 	}
 	@After(event = DraftService.EVENT_DRAFT_CREATE)
-	public void AfterCreateCustRequestNotesDraft(DraftCreateEventContext context, CustRequestNotes custRequestNote) {
-		System.out.println("------------------------------- after CustRequestNotes draft create event handler");
+	public void AfterCreateCustRequestNotesDraft(DraftCreateEventContext context, RequestNotes requestNote) {
+		System.out.println("------------------------------- after RequestNotes draft create event handler");
 		DraftService service = (DraftService) context.getService();
 		// NoteDatas noteDatas = NoteDatas.create();
 		// String noteId = custRequestNote.getNoteDataId();
@@ -127,6 +135,46 @@ public class CatalogServiceHandler implements EventHandler {
 		Insert custRequestWorkEffortInsert = Insert.into(CustRequestWorkEfforts_.class).entry(custRequestWorkEfforts);
 		service.run(workEffortInsert);
 		service.run(custRequestWorkEffortInsert);
+	}
+
+	@On(event = CqnService.EVENT_CREATE)
+	public void createRequestNotes(CdsCreateEventContext context, RequestNotes requestNotes) {
+		System.out.println("------------------------------- on create RequestNotes event handler");
+		NoteDatas noteDatas = NoteDatas.create();
+		noteDatas.setId(requestNotes.getNoteId());
+		noteDatas.setNoteInfo(requestNotes.getNoteInfo());
+		noteDatas.setNoteName(requestNotes.getNoteInfo());
+		Insert insertNoteDatas = Insert.into(NoteDatas_.class).entry(noteDatas);
+		db.run(insertNoteDatas);
+
+		CustRequestNotes custRequestNotes = CustRequestNotes.create();
+		custRequestNotes.setNoteDataId(requestNotes.getNoteId());
+		custRequestNotes.setCustRequestId(requestNotes.getCustRequestId());
+		Insert insertCustRequestNotes = Insert.into(CustRequestNotes_.class).entry(custRequestNotes);
+		db.run(insertCustRequestNotes);
+	}
+
+	@On(event = DraftService.EVENT_DRAFT_SAVE)
+	public void upsertRequestNotes(DraftSaveEventContext context, RequestNotes requestNotes) {
+		System.out.println("------------------------------- on create RequestNotes event handler");
+		NoteDatas noteDatas = NoteDatas.create();
+		noteDatas.setId(requestNotes.getNoteId());
+		noteDatas.setNoteInfo(requestNotes.getNoteInfo());
+		noteDatas.setNoteName(requestNotes.getNoteInfo());
+		Insert insertNoteDatas = Insert.into(NoteDatas_.class).entry(noteDatas);
+		db.run(insertNoteDatas);
+
+		CustRequestNotes custRequestNotes = CustRequestNotes.create();
+		custRequestNotes.setNoteDataId(requestNotes.getNoteId());
+		custRequestNotes.setCustRequestId(requestNotes.getCustRequestId());
+		Insert insertCustRequestNotes = Insert.into(CustRequestNotes_.class).entry(custRequestNotes);
+		db.run(insertCustRequestNotes);
+	}
+
+	@On(event = DraftService.EVENT_DRAFT_SAVE)
+	public void saveCustRequests(DraftSaveEventContext context, CustRequests custRequests) {
+		System.out.println("------------------------------- on save custRequests event handler");
+		System.out.println("------------------------------- on save custRequests event handler");
 	}
 
 	@On(entity = CustRequests_.CDS_NAME)
@@ -188,5 +236,10 @@ public class CatalogServiceHandler implements EventHandler {
 		Insert insertCustRequestNotes = Insert.into(CustRequestNotes_.class).entry(custRequestNotes);
 		CustRequestNotes result = draftService.run(insertCustRequestNotes).single(CustRequestNotes.class);
 		context.setResult(result);
+	}
+	
+	@On(entity = RequestNotes_.CDS_NAME)
+	public void prepareRequestNotes(PrepareRequestNotesContext context) {
+		System.out.println("------------------------------- in prepareRequestNotes");
 	}
 }

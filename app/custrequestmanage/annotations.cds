@@ -78,13 +78,36 @@ annotate service.CustRequests with @(
             ID : 'BASEINFO',
             Target : '@UI.FieldGroup#BaseInfo',
         },
+        // {
+        //     $Type : 'UI.ReferenceFacet',
+        //     Target : 'custRequestNote/@UI.LineItem',
+        //     Label : 'Notes',
+        //     ID : 'CUSTREQUESTNOTE',
+        // },
         {
             $Type : 'UI.ReferenceFacet',
-            Target : 'CustRequestNote/@UI.LineItem',
+            Target : 'requestNotes/@UI.LineItem',
             Label : 'Notes',
             ID : 'CUSTREQUESTNOTE',
         },
     ]
+);
+annotate service.RequestNotes with @(
+    UI.LineItem : [
+        {
+            $Type : 'UI.DataField',
+            Value : noteId,
+            Label : 'Note ID',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : noteName,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : noteInfo,
+        },
+   ]
 );
 annotate service.CustRequestNotes with @(
     UI.LineItem : [
@@ -106,11 +129,6 @@ annotate service.CustRequestNotes with @(
             Label : '{i18n>AddNotes}',
             Action : 'CatalogService.addNotes'
         },
-        // {
-        //     $Type : 'UI.DataField',
-        //     Label : 'Another note info',
-        //     Value : noteData.noteInfo,
-        // },
    ]
 );
 annotate service.CustRequests with @(

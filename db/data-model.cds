@@ -19,7 +19,6 @@ entity CustRequest : cuid,managed {
   fromParty : Association to Party;
   Items : Composition of one CustRequestItem on Items.custRequest = $self;
   custRequestParty : Composition of many CustRequestParty on custRequestParty.custRequest = $self;
-  CustRequestNote : Composition of many CustRequestNote on CustRequestNote.custRequest = $self;
 }
 
 entity CustRequestItem : managed {
@@ -29,6 +28,16 @@ entity CustRequestItem : managed {
   product : Association to Product;
   // fixedAssetFault : Composition of one FixedAssetFault on custRequestId = fixedAssetFault.custRequestId and itemSeqId = fixedAssetFault.itemSeqId;
   fixedAssetFault : Composition of one FixedAssetFault on fixedAssetFault.custRequestItems = $self;
+}
+
+entity NoteData : cuid, managed {
+  noteName : String @title : '{i18n>NoteName}';
+  noteInfo : String @title : '{i18n>NoteInfo}';
+}
+
+entity CustRequestNote {
+  key custRequest : Association to CustRequest;
+  key noteData : Association to NoteData @title : '{i18n>NoteId}';
 }
 
 entity Product {
@@ -69,17 +78,6 @@ entity FixedAssetFault : cuid,managed {
   workEffort : Association to one WorkEffort;
   statusId : String;
   description : String;
-}
-
-entity NoteData : cuid, managed {
-  noteName : String @title : '{i18n>NoteName}';
-  noteInfo : String @title : '{i18n>NoteInfo}';
-}
-
-entity CustRequestNote {
-  key custRequest : Association to CustRequest;
-  // key noteData : Association to NoteData @title : '{i18n>NoteId}';
-  key noteData : Association to NoteData @title : '{i18n>NoteId}';
 }
 
 entity CustRequestParty {
