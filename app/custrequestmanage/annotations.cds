@@ -90,6 +90,12 @@ annotate service.CustRequests with @(
             Label : 'Notes',
             ID : 'CUSTREQUESTNOTE',
         },
+        {
+            $Type : 'UI.ReferenceFacet',
+            Target : 'custRequestParty/@UI.LineItem',
+            Label : 'Party',
+            ID : 'CUSTREQUESPARTY',
+        },
     ]
 );
 annotate service.RequestNotes with @(
@@ -106,6 +112,20 @@ annotate service.RequestNotes with @(
         {
             $Type : 'UI.DataField',
             Value : noteInfo,
+        },
+   ]
+);
+annotate service.CustRequestParties with @(
+    UI.LineItem : [
+        {
+            $Type : 'UI.DataField',
+            Value : party_ID,
+            Label : 'Party ID',
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : roleTypeId,
+            Label : 'Role ID'
         },
    ]
 );

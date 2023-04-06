@@ -80,8 +80,8 @@ entity FixedAssetFault : cuid,managed {
   description : String;
 }
 
-entity CustRequestParty {
-  key custRequest : Association to CustRequest;
-  key party : Association to Party;
+entity CustRequestParty : cuid,managed{
+  custRequest : Association to CustRequest;
+  party : Association to Party;
   roleTypeId : String;
 }
