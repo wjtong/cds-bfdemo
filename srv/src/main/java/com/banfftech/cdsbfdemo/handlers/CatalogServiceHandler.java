@@ -3,6 +3,7 @@ package com.banfftech.cdsbfdemo.handlers;
 import static cds.gen.catalogservice.CatalogService_.WORK_EFFORTS;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -14,6 +15,7 @@ import com.sap.cds.Result;
 import com.sap.cds.Row;
 import com.sap.cds.ql.Insert;
 import com.sap.cds.ql.Select;
+import com.sap.cds.ql.Update;
 import com.sap.cds.ql.cqn.CqnAnalyzer;
 import com.sap.cds.ql.cqn.CqnSelect;
 import com.sap.cds.ql.cqn.CqnSource;
@@ -125,7 +127,7 @@ public class CatalogServiceHandler implements EventHandler {
 	@After(event = CqnService.EVENT_CREATE)
 	public void createWorkEffort(CdsCreateEventContext context, CustRequests custRequest) {
 		System.out.println("------------------------------- in after create event handler");
-		CqnService service = context.getService();
+		// CqnService service = context.getService();
 		WorkEfforts workEfforts = WorkEfforts.create();
 		workEfforts.setWorkEffortId(UUID.randomUUID().toString());
 		CustRequestWorkEfforts custRequestWorkEfforts = CustRequestWorkEfforts.create();
@@ -133,48 +135,40 @@ public class CatalogServiceHandler implements EventHandler {
 		custRequestWorkEfforts.setWorkEffortId(workEfforts.getWorkEffortId());
 		Insert workEffortInsert = Insert.into(WORK_EFFORTS).entry(workEfforts);
 		Insert custRequestWorkEffortInsert = Insert.into(CustRequestWorkEfforts_.class).entry(custRequestWorkEfforts);
-		service.run(workEffortInsert);
-		service.run(custRequestWorkEffortInsert);
+		// service.run(workEffortInsert);
+		// service.run(custRequestWorkEffortInsert);
+		db.run(workEffortInsert);
+		db.run(custRequestWorkEffortInsert);
+		updateNoteDatas(custRequest);
+	}
+	@After(event = CqnService.EVENT_UPDATE)
+	public void afterUpdateCustRequest(CdsUpdateEventContext context, CustRequests custRequest) {
+		System.out.println("------------------------------- afterUpdateCustRequest");
+		updateNoteDatas(custRequest);
 	}
 
-	@On(event = CqnService.EVENT_CREATE)
-	public void createRequestNotes(CdsCreateEventContext context, RequestNotes requestNotes) {
-		System.out.println("------------------------------- on create RequestNotes event handler");
-		NoteDatas noteDatas = NoteDatas.create();
-		noteDatas.setId(requestNotes.getNoteId());
-		noteDatas.setNoteInfo(requestNotes.getNoteInfo());
-		noteDatas.setNoteName(requestNotes.getNoteInfo());
-		Insert insertNoteDatas = Insert.into(NoteDatas_.class).entry(noteDatas);
-		db.run(insertNoteDatas);
-
-		CustRequestNotes custRequestNotes = CustRequestNotes.create();
-		custRequestNotes.setNoteDataId(requestNotes.getNoteId());
-		custRequestNotes.setCustRequestId(requestNotes.getCustRequestId());
-		Insert insertCustRequestNotes = Insert.into(CustRequestNotes_.class).entry(custRequestNotes);
-		db.run(insertCustRequestNotes);
-	}
-
-	@On(event = DraftService.EVENT_DRAFT_SAVE)
-	public void upsertRequestNotes(DraftSaveEventContext context, RequestNotes requestNotes) {
-		System.out.println("------------------------------- on create RequestNotes event handler");
-		NoteDatas noteDatas = NoteDatas.create();
-		noteDatas.setId(requestNotes.getNoteId());
-		noteDatas.setNoteInfo(requestNotes.getNoteInfo());
-		noteDatas.setNoteName(requestNotes.getNoteInfo());
-		Insert insertNoteDatas = Insert.into(NoteDatas_.class).entry(noteDatas);
-		db.run(insertNoteDatas);
-
-		CustRequestNotes custRequestNotes = CustRequestNotes.create();
-		custRequestNotes.setNoteDataId(requestNotes.getNoteId());
-		custRequestNotes.setCustRequestId(requestNotes.getCustRequestId());
-		Insert insertCustRequestNotes = Insert.into(CustRequestNotes_.class).entry(custRequestNotes);
-		db.run(insertCustRequestNotes);
-	}
-
-	@On(event = DraftService.EVENT_DRAFT_SAVE)
-	public void saveCustRequests(DraftSaveEventContext context, CustRequests custRequests) {
-		System.out.println("------------------------------- on save custRequests event handler");
-		System.out.println("------------------------------- on save custRequests event handler");
+	private void updateNoteDatas(CustRequests custRequests) {
+		List<RequestNotes> requestNotes = custRequests.getRequestNotes();
+		for (RequestNotes requestNote:requestNotes) {
+			System.out.println("------------------------------- " + requestNote.getNoteId());
+			Result result = db.run(Select.from(NoteDatas_.class).byId(requestNote.getNoteId()));
+			if (result.rowCount() == 0) {
+				System.out.println("------------------------------- " + requestNote.getNoteId() + " doesn't exist");
+				NoteDatas noteDatas = NoteDatas.create();
+				noteDatas.setId(requestNote.getNoteId());
+				noteDatas.setNoteInfo(requestNote.getNoteInfo());
+				noteDatas.setNoteName(requestNote.getNoteInfo());
+				Insert insertNoteDatas = Insert.into(NoteDatas_.class).entry(noteDatas);
+				db.run(insertNoteDatas).single(NoteDatas.class);
+			} else {
+				System.out.println("------------------------------- " + requestNote.getNoteId() + " exists");
+				NoteDatas noteDatas = NoteDatas.create();
+				noteDatas.setId(requestNote.getNoteId());
+				noteDatas.setNoteInfo(requestNote.getNoteInfo());
+				noteDatas.setNoteName(requestNote.getNoteInfo());
+				db.run(Update.entity(NoteDatas_.class).data(noteDatas));
+			}
+		}
 	}
 
 	@On(entity = CustRequests_.CDS_NAME)
